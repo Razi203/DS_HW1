@@ -28,66 +28,72 @@ void Pirate::updateHeight()
     setHeight((left_height < right_height) ? right_height + 1 : left_height + 1);
 }
 
-void Pirate::LL(shared_ptr<Pirate> node_pointer)
+shared_ptr<Pirate> Pirate::LL(shared_ptr<Pirate> node_pointer)
 {
     shared_ptr<Pirate> parent = getParent();
-    shared_ptr<Pirate> temp(new Pirate());
-    temp->setLeftSon(getLeftSon());
+    shared_ptr<Pirate> temp = getLeftSon();
     setLeftSon(nullptr);
+    temp->setParent(parent);
     if (parent != nullptr)
     {
         if (parent->getLeftSon() == node_pointer)
         {
-            parent->setLeftSon(temp->getLeftSon());
+            parent->setLeftSon(temp);
         }
         else
         {
-            parent->setRightSon(temp->getLeftSon());
+            parent->setRightSon(temp);
         }
     }
-    setLeftSon(temp->getLeftSon()->getRightSon());
-    temp->getLeftSon()->setRightSon(node_pointer);
+    setLeftSon(temp->getRightSon());
+    temp->getRightSon()->setParent(node_pointer);
+    temp->setRightSon(node_pointer);
+    node_pointer->setParent(temp);
     updateHeight();
-    temp->getLeftSon()->updateHeight();
+    temp->updateHeight();
+    return temp;
 }
 
-void Pirate::RR(shared_ptr<Pirate> node_pointer)
+shared_ptr<Pirate> Pirate::RR(shared_ptr<Pirate> node_pointer)
 {
     shared_ptr<Pirate> parent = getParent();
-    shared_ptr<Pirate> temp(new Pirate());
-    temp->setRightSon(getRightSon());
+    shared_ptr<Pirate> temp = getRightSon();
     setRightSon(nullptr);
+    temp->setParent(parent);
     if (parent != nullptr)
     {
         if (parent->getLeftSon() == node_pointer)
         {
-            parent->setLeftSon(temp->getRightSon());
+            parent->setLeftSon(temp);
         }
         else
         {
-            parent->setRightSon(temp->getRightSon());
+            parent->setRightSon(temp);
         }
     }
-    setRightSon(temp->getRightSon()->getLeftSon());
-    temp->getRightSon()->setLeftSon(node_pointer);
+    setRightSon(temp->getLeftSon());
+    temp->getLeftSon()->setParent(node_pointer);
+    temp->setLeftSon(node_pointer);
+    node_pointer->setParent(temp);
     updateHeight();
-    temp->getRightSon()->updateHeight();
+    temp->updateHeight();
+    return temp;
 }
 
-void Pirate::LR(shared_ptr<Pirate> node_pointer)
+shared_ptr<Pirate> Pirate::LR(shared_ptr<Pirate> node_pointer)
 {
     shared_ptr<Pirate> left_son = getLeftSon();
     left_son->RR(left_son);
     left_son.reset();
-    LL(node_pointer);
+    return LL(node_pointer);
 }
 
-void Pirate::RL(shared_ptr<Pirate> node_pointer)
+shared_ptr<Pirate> Pirate::RL(shared_ptr<Pirate> node_pointer)
 {
     shared_ptr<Pirate> right_son = getRightSon();
     right_son->LL(right_son);
     right_son.reset();
-    RR(node_pointer);
+    return RR(node_pointer);
 }
 
 /**
@@ -112,63 +118,69 @@ void Pirate::updateMoneyHeight()
     setMoneyHeight((left_height < right_height) ? right_height + 1 : left_height + 1);
 }
 
-void Pirate::LLMoney(shared_ptr<Pirate> node_pointer)
+shared_ptr<Pirate> Pirate::LLMoney(shared_ptr<Pirate> node_pointer)
 {
     shared_ptr<Pirate> parent = getMoneyParent();
-    shared_ptr<Pirate> temp(new Pirate());
-    temp->setMoneyLeftSon(getMoneyLeftSon());
+    shared_ptr<Pirate> temp = getMoneyLeftSon();
     setMoneyLeftSon(nullptr);
+    temp->setMoneyParent(parent);
     if (parent != nullptr)
     {
         if (parent->getMoneyLeftSon() == node_pointer)
         {
-            parent->setMoneyLeftSon(temp->getMoneyLeftSon());
+            parent->setMoneyLeftSon(temp);
         }
         else
         {
-            parent->setMoneyRightSon(temp->getMoneyLeftSon());
+            parent->setMoneyRightSon(temp);
         }
     }
-    setLeftSon(temp->getMoneyLeftSon()->getMoneyRightSon());
-    temp->getMoneyLeftSon()->setMoneyRightSon(node_pointer);
+    setMoneyLeftSon(temp->getMoneyRightSon());
+    temp->setMoneyRightSon(node_pointer);
+    temp->getMoneyRightSon()->setMoneyParent(node_pointer);
+    node_pointer->setMoneyParent(temp);
     updateMoneyHeight();
-    temp->getMoneyLeftSon()->updateMoneyHeight();
+    temp->updateMoneyHeight();
+    return temp;
 }
 
-void Pirate::RRMoney(shared_ptr<Pirate> node_pointer)
+shared_ptr<Pirate> Pirate::RRMoney(shared_ptr<Pirate> node_pointer)
 {
     shared_ptr<Pirate> parent = getMoneyParent();
-    shared_ptr<Pirate> temp(new Pirate());
-    temp->setMoneyRightSon(getMoneyRightSon());
+    shared_ptr<Pirate> temp = getMoneyRightSon();
     setMoneyRightSon(nullptr);
+    temp->setMoneyParent(parent);
     if (parent->getMoneyLeftSon() == node_pointer)
     {
-        parent->setMoneyLeftSon(temp->getMoneyRightSon());
+        parent->setMoneyLeftSon(temp);
     }
     else
     {
-        parent->setMoneyRightSon(temp->getMoneyRightSon());
+        parent->setMoneyRightSon(temp);
     }
-    setMoneyRightSon(temp->getMoneyRightSon()->getMoneyLeftSon());
-    temp->getMoneyRightSon()->setMoneyLeftSon(node_pointer);
+    setMoneyRightSon(temp->getMoneyLeftSon());
+    temp->setMoneyLeftSon(node_pointer);
+    temp->getMoneyLeftSon()->setMoneyParent(node_pointer);
+    node_pointer->setMoneyParent(temp);
     updateMoneyHeight();
-    temp->getMoneyRightSon()->updateMoneyHeight();
+    temp->updateMoneyHeight();
+    return temp;
 }
 
-void Pirate::LRMoney(shared_ptr<Pirate> node_pointer)
+shared_ptr<Pirate> Pirate::LRMoney(shared_ptr<Pirate> node_pointer)
 {
     shared_ptr<Pirate> left_son = getMoneyLeftSon();
     left_son->RRMoney(left_son);
     left_son.reset();
-    LLMoney(node_pointer);
+    return LLMoney(node_pointer);
 }
 
-void Pirate::RLMoney(shared_ptr<Pirate> node_pointer)
+shared_ptr<Pirate> Pirate::RLMoney(shared_ptr<Pirate> node_pointer)
 {
     shared_ptr<Pirate> right_son = getMoneyRightSon();
     right_son->LLMoney(right_son);
     right_son.reset();
-    RRMoney(node_pointer);
+    return RRMoney(node_pointer);
 }
 
 // #######################################################################

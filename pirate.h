@@ -23,15 +23,15 @@ public:
 
     friend ostream &operator<<(ostream &os, const Pirate &pirate);
 
-    void LL(shared_ptr<Pirate> node_pointer);
-    void RR(shared_ptr<Pirate> node_pointer);
-    void RL(shared_ptr<Pirate> node_pointer);
-    void LR(shared_ptr<Pirate> node_pointer);
+    shared_ptr<Pirate> LL(shared_ptr<Pirate> node_pointer);
+    shared_ptr<Pirate> RR(shared_ptr<Pirate> node_pointer);
+    shared_ptr<Pirate> RL(shared_ptr<Pirate> node_pointer);
+    shared_ptr<Pirate> LR(shared_ptr<Pirate> node_pointer);
 
-    void LLMoney(shared_ptr<Pirate> node_pointer);
-    void RRMoney(shared_ptr<Pirate> node_pointer);
-    void RLMoney(shared_ptr<Pirate> node_pointer);
-    void LRMoney(shared_ptr<Pirate> node_pointer);
+    shared_ptr<Pirate> LLMoney(shared_ptr<Pirate> node_pointer);
+    shared_ptr<Pirate> RRMoney(shared_ptr<Pirate> node_pointer);
+    shared_ptr<Pirate> RLMoney(shared_ptr<Pirate> node_pointer);
+    shared_ptr<Pirate> LRMoney(shared_ptr<Pirate> node_pointer);
 
     void updateHeight();
     void updateMoneyHeight();
@@ -40,19 +40,28 @@ public:
     int getMoneyBF();
 
     // Setters
+
     void setPirateId(int id);
     void setTreasure(int value);
     void setMaxTreasure(int value);
-    void setHeight(int h);
-    void setMoneyHeight(int mh);
-    void setLeftSon(shared_ptr<Pirate> son);
-    void setRightSon(shared_ptr<Pirate> son);
-    void setParent(shared_ptr<Pirate> f);
     void setPrev(shared_ptr<Pirate> p);
     void setNext(shared_ptr<Pirate> n);
+
+    void setHeightChoose(int h, int mode);
+    void setParentChoose(shared_ptr<Pirate> f, int mode);
+    void setLeftSonChoose(shared_ptr<Pirate> son, int mode);
+    void setRightSonChoose(shared_ptr<Pirate> son, int mode);
+
+    void setHeight(int h);
+    void setParent(shared_ptr<Pirate> f);
+    void setLeftSon(shared_ptr<Pirate> son);
+    void setRightSon(shared_ptr<Pirate> son);
+
+    void setMoneyHeight(int mh);
     void setMoneyParent(shared_ptr<Pirate> mf);
     void setMoneyLeftSon(shared_ptr<Pirate> ml);
     void setMoneyRightSon(shared_ptr<Pirate> mr);
+
     void setShip(shared_ptr<Ship> s);
 
     // Getters
@@ -61,6 +70,7 @@ public:
     int getTreasure() const;
     int getHeight() const;
     int getMoneyHeight() const;
+    int getMaxId() const;
     shared_ptr<Pirate> getLeftSon() const;
     shared_ptr<Pirate> getRightSon() const;
     shared_ptr<Pirate> getParent() const;
@@ -75,12 +85,36 @@ private:
     int pirateId;
     int treasure;
     int max_treasure;
+    int max_id;
     int height, money_height;
     shared_ptr<Pirate> left_son, right_son;
     weak_ptr<Pirate> parent;
     weak_ptr<Pirate> prev, next;
     weak_ptr<Pirate> money_parent, money_left_son, money_right_son;
     weak_ptr<Ship> ship;
+};
+
+class PirateCompare // true if b > a
+{
+    bool operator()(shared_ptr<Pirate> a, shared_ptr<Pirate> b) const
+    {
+        return a->getPirateId() < b->getPirateId();
+    }
+};
+
+class MoneyCompare // true if b > a
+{
+    bool operator()(shared_ptr<Pirate> a, shared_ptr<Pirate> b) const
+    {
+        if (a->getTreasure() < b->getTreasure())
+            return true;
+        else if (a->getTreasure() > b->getTreasure())
+            return false;
+        else if (a->getPirateId() < b->getPirateId())
+            return true;
+        else
+            return false;
+    }
 };
 
 #endif
