@@ -41,6 +41,19 @@ StatusType Ocean::update_pirate_treasure(int pirateId, int change)
 
 output_t<int> Ocean::get_treasure(int pirateId)
 {
+    if (pirateId <= 0)
+    {
+        return output_t<int>(StatusType::INVALID_INPUT);
+    }
+
+    shared_ptr<Pirate> pirate = find_pirate(pirateId);
+    if (pirate == nullptr)
+    {
+        return output_t<int>(StatusType::FAILURE);
+    }
+
+    return output_t<int>(pirate->getTreasure());
+
     return 0;
 }
 
@@ -123,4 +136,54 @@ void Ocean::postorder(shared_ptr<Pirate> node) const
     inorder(node->getLeftSon());
     inorder(node->getRightSon());
     cout << *node;
+}
+
+shared_ptr<Ship> Ocean::find_ship(int shipId)
+{
+    shared_ptr<Ship> current = ship_root;
+    while (current)
+    {
+        int curId = current->getShipId();
+        if (curId == shipId)
+        {
+            return current;
+        }
+        else if (shipId > curId)
+        {
+
+            current = current->getLeftSon();
+        }
+        else
+        {
+
+            current = current->getRightSon();
+        }
+    }
+
+    return nullptr;
+}
+
+shared_ptr<Pirate> Ocean::find_pirate(int pirateId)
+{
+    shared_ptr<Pirate> current = pirate_root;
+    while (current)
+    {
+        int curId = current->getPirateId();
+        if (curId == pirateId)
+        {
+            return current;
+        }
+        else if (pirateId > curId)
+        {
+
+            current = current->getLeftSon();
+        }
+        else
+        {
+
+            current = current->getRightSon();
+        }
+    }
+
+    return nullptr;
 }
