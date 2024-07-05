@@ -14,6 +14,7 @@ class Pirate
 {
 
 public:
+    Pirate() : pirateId(ZERO), treasure(ZERO), left_son(nullptr), right_son(nullptr), father(weak_ptr<Pirate>()), prev(weak_ptr<Pirate>()), next(weak_ptr<Pirate>()), money_father(weak_ptr<Pirate>()), money_left_son(weak_ptr<Pirate>()), money_right_son(weak_ptr<Pirate>()), ship(weak_ptr<Ship>()) {}
     Pirate(int id, int value) : pirateId(id), treasure(value), left_son(nullptr), right_son(nullptr), father(weak_ptr<Pirate>()), prev(weak_ptr<Pirate>()), next(weak_ptr<Pirate>()), money_father(weak_ptr<Pirate>()), money_left_son(weak_ptr<Pirate>()), money_right_son(weak_ptr<Pirate>()), ship(weak_ptr<Ship>()) {}
 
     ~Pirate() {}
@@ -22,131 +23,53 @@ public:
 
     friend ostream &operator<<(ostream &os, const Pirate &pirate);
 
+    void LL(shared_ptr<Pirate> node_pointer);
+    void RR(shared_ptr<Pirate> node_pointer);
+    void RL(shared_ptr<Pirate> node_pointer);
+    void LR(shared_ptr<Pirate> node_pointer);
+
+    void LLMoney(shared_ptr<Pirate> node_pointer);
+    void RRMoney(shared_ptr<Pirate> node_pointer);
+    void RLMoney(shared_ptr<Pirate> node_pointer);
+    void LRMoney(shared_ptr<Pirate> node_pointer);
+
+    void updateHeight();
+    void updateMoneyHeight();
+
+    int getBF();
+    int getMoneyBF();
+
     // Setters
-    void setPirateId(int id)
-    {
-        pirateId = id;
-    }
-
-    void setTreasure(int value)
-    {
-        treasure = value;
-    }
-
-    void setMaxTreasure(int value)
-    {
-        max_treasure = value;
-    }
-
-    void setHeight(int h)
-    {
-        height = h;
-    }
-
-    void setMoneyHeight(int mh)
-    {
-        money_height = mh;
-    }
-
-    void setLeftSon(shared_ptr<Pirate> son)
-    {
-        left_son = son;
-    }
-    void setRightSon(shared_ptr<Pirate> son)
-    {
-        right_son = son;
-    }
-    void setFather(weak_ptr<Pirate> f)
-    {
-        father = f;
-    }
-    void setPrev(weak_ptr<Pirate> p)
-    {
-        prev = p;
-    }
-    void setNext(weak_ptr<Pirate> n)
-    {
-        next = n;
-    }
-    void setMoneyFather(weak_ptr<Pirate> mf)
-    {
-        money_father = mf;
-    }
-    void setMoneyLeftSon(weak_ptr<Pirate> ml)
-    {
-        money_left_son = ml;
-    }
-    void setMoneyRightSon(weak_ptr<Pirate> mr)
-    {
-        money_right_son = mr;
-    }
-    void setShip(weak_ptr<Ship> s)
-    {
-        ship = s;
-    }
+    void setPirateId(int id);
+    void setTreasure(int value);
+    void setMaxTreasure(int value);
+    void setHeight(int h);
+    void setMoneyHeight(int mh);
+    void setLeftSon(shared_ptr<Pirate> son);
+    void setRightSon(shared_ptr<Pirate> son);
+    void setFather(shared_ptr<Pirate> f);
+    void setPrev(shared_ptr<Pirate> p);
+    void setNext(shared_ptr<Pirate> n);
+    void setMoneyFather(shared_ptr<Pirate> mf);
+    void setMoneyLeftSon(shared_ptr<Pirate> ml);
+    void setMoneyRightSon(shared_ptr<Pirate> mr);
+    void setShip(shared_ptr<Ship> s);
 
     // Getters
-
-    int getPirateId() const
-    {
-        return pirateId;
-    }
-    int getMaxTreasure() const
-    {
-        return max_treasure;
-    }
-
-    int getTreasure() const
-    {
-        return treasure;
-    }
-
-    int getHeight() const
-    {
-        return height;
-    }
-
-    int getMoneyHeight() const
-    {
-        return money_height;
-    }
-
-    shared_ptr<Pirate> getLeftSon() const
-    {
-        return left_son;
-    }
-    shared_ptr<Pirate> getRightSon() const
-    {
-        return right_son;
-    }
-    weak_ptr<Pirate> getFather() const
-    {
-        return father;
-    }
-    weak_ptr<Pirate> getPrev() const
-    {
-        return prev;
-    }
-    weak_ptr<Pirate> getNext() const
-    {
-        return next;
-    }
-    weak_ptr<Pirate> getMoneyFather() const
-    {
-        return money_father;
-    }
-    weak_ptr<Pirate> getMoneyLeftSon() const
-    {
-        return money_left_son;
-    }
-    weak_ptr<Pirate> getMoneyRightSon() const
-    {
-        return money_right_son;
-    }
-    weak_ptr<Ship> getShip() const
-    {
-        return ship;
-    }
+    int getPirateId() const;
+    int getMaxTreasure() const;
+    int getTreasure() const;
+    int getHeight() const;
+    int getMoneyHeight() const;
+    shared_ptr<Pirate> getLeftSon() const;
+    shared_ptr<Pirate> getRightSon() const;
+    shared_ptr<Pirate> getFather() const;
+    shared_ptr<Pirate> getPrev() const;
+    shared_ptr<Pirate> getNext() const;
+    shared_ptr<Pirate> getMoneyFather() const;
+    shared_ptr<Pirate> getMoneyLeftSon() const;
+    shared_ptr<Pirate> getMoneyRightSon() const;
+    shared_ptr<Ship> getShip() const;
 
 private:
     int pirateId;
