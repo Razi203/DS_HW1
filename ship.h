@@ -59,17 +59,13 @@ public:
     int getCannonCount() const;
     int getPirateCount() const;
     int getHeight() const;
+    int getTreasureModifier() const;
     shared_ptr<Ship> getLeftSon() const;
     shared_ptr<Ship> getRightSon() const;
     shared_ptr<Ship> getFather() const;
     shared_ptr<Pirate> getFirstPirate() const;
     shared_ptr<Pirate> getLastPirate() const;
     shared_ptr<Pirate> getMoneyRoot() const;
-
-    int getTreasureModifier() const
-    {
-        return treasure_modifier;
-    }
 
 private:
     int shipId;
