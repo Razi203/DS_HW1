@@ -28,60 +28,68 @@ void Ship::updateHeight()
     setHeight((left_height < right_height) ? right_height + 1 : left_height + 1);
 }
 
-void Ship::LL(shared_ptr<Ship> node_pointer)
+shared_ptr<Ship> Ship::LL(shared_ptr<Ship> node_pointer)
 {
     shared_ptr<Ship> parent = getParent();
-    shared_ptr<Ship> temp(new Ship());
-    temp->setLeftSon(getLeftSon());
+    shared_ptr<Ship> temp = getLeftSon();
     setLeftSon(nullptr);
+    temp->setParent(parent);
     if (parent->getLeftSon() == node_pointer)
     {
-        parent->setLeftSon(temp->getLeftSon());
+        parent->setLeftSon(temp);
     }
     else
     {
-        parent->setRightSon(temp->getLeftSon());
+        parent->setRightSon(temp);
     }
-    setLeftSon(temp->getLeftSon()->getRightSon());
-    temp->getLeftSon()->setRightSon(node_pointer);
+
+    setLeftSon(temp->getRightSon());
+    temp->setRightSon(node_pointer);
+    temp->getRightSon()->setParent(node_pointer);
     updateHeight();
-    temp->getLeftSon()->updateHeight();
+    temp->updateHeight();
+    return temp;
 }
 
-void Ship::RR(shared_ptr<Ship> node_pointer)
+shared_ptr<Ship> Ship::RR(shared_ptr<Ship> node_pointer)
 {
     shared_ptr<Ship> parent = getParent();
-    shared_ptr<Ship> temp(new Ship());
-    temp->setRightSon(getRightSon());
+    shared_ptr<Ship> temp = getRightSon();
     setRightSon(nullptr);
-    if (parent->getLeftSon() == node_pointer)
+    temp->setParent(parent);
+    if (parent != nullptr)
     {
-        parent->setLeftSon(temp->getRightSon());
+        if (parent->getLeftSon() == node_pointer)
+        {
+            parent->setLeftSon(temp);
+        }
+        else
+        {
+            parent->setRightSon(temp);
+        }
     }
-    else
-    {
-        parent->setRightSon(temp->getRightSon());
-    }
-    setRightSon(temp->getRightSon()->getLeftSon());
-    temp->getRightSon()->setLeftSon(node_pointer);
+    setRightSon(temp->getLeftSon());
+    temp->setLeftSon(node_pointer);
+    temp->getLeftSon()->setParent(node_pointer);
     updateHeight();
-    temp->getRightSon()->updateHeight();
+    temp->updateHeight();
+    return temp;
 }
 
-void Ship::LR(shared_ptr<Ship> node_pointer)
+shared_ptr<Ship> Ship::LR(shared_ptr<Ship> node_pointer)
 {
     shared_ptr<Ship> left_son = getLeftSon();
     left_son->RR(left_son);
     left_son.reset();
-    LL(node_pointer);
+    return LL(node_pointer);
 }
 
-void Ship::RL(shared_ptr<Ship> node_pointer)
+shared_ptr<Ship> Ship::RL(shared_ptr<Ship> node_pointer)
 {
     shared_ptr<Ship> right_son = getRightSon();
     right_son->LL(right_son);
     right_son.reset();
-    RR(node_pointer);
+    return RR(node_pointer);
 }
 
 // #######################################################################

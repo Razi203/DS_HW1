@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "pirates24b1.h"
+#include "AVLTree.h"
 #include "wet1util.h"
 #include "ship.h"
 
@@ -33,10 +34,10 @@ public:
 
     friend ostream &operator<<(ostream &os, const Ship &ship);
 
-    void LL(shared_ptr<Ship> node_pointer);
-    void RR(shared_ptr<Ship> node_pointer);
-    void RL(shared_ptr<Ship> node_pointer);
-    void LR(shared_ptr<Ship> node_pointer);
+    shared_ptr<Ship> LL(shared_ptr<Ship> node_pointer);
+    shared_ptr<Ship> RR(shared_ptr<Ship> node_pointer);
+    shared_ptr<Ship> RL(shared_ptr<Ship> node_pointer);
+    shared_ptr<Ship> LR(shared_ptr<Ship> node_pointer);
 
     void updateHeight();
 
@@ -74,9 +75,15 @@ private:
     int pirate_count;
     int height;
     int treasure_modifier;
-    shared_ptr<Ship> left_son, right_son;
-    weak_ptr<Ship> parent;
-    weak_ptr<Pirate> first_pirate, last_pirate, money_root;
+    weak_ptr<Pirate> first_pirate, last_pirate;
+    AVLTree<Pirate, MoneyCompare> moeny_pirates;
 };
 
+class ShipCompare
+{
+    bool operator()(shared_ptr<Ship> a, shared_ptr<Ship> b) const
+    {
+        return a->getShipId() < b->getShipId();
+    }
+};
 #endif // SHIPS_H

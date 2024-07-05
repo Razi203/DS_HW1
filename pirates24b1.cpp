@@ -15,8 +15,8 @@ StatusType Ocean::add_ship(int shipId, int cannons)
     {
         return StatusType::INVALID_INPUT;
     }
-    shared_ptr<Ship> location = findShipLocation(shipId);
-    if (location->getShipId() == shipId)
+    shared_ptr<Ship> parent = findShipLocation(shipId);
+    if (parent == nullptr || parent->getShipId() == shipId)
     {
         return StatusType::FAILURE;
     }
@@ -31,19 +31,68 @@ StatusType Ocean::add_ship(int shipId, int cannons)
         return StatusType::ALLOCATION_ERROR;
     }
 
-    if (location->getShipId() > shipId)
+    if (parent->getShipId() > shipId)
     {
-        location->setLeftSon(new_ship);
+        parent->setLeftSon(new_ship);
     }
     else
     {
-        location->setRightSon(new_ship);
+        parent->setRightSon(new_ship);
     }
+
+    new_ship->setParent(parent);
+
+    while (parent != nullptr)
+    {
+        parent->updateHeight();
+        if (parent->getBF() == 2)
+        {
+            if (parent->getLeftSon()->getBF() >= 0)
+            {
+                parent->LL(parent);
+            }
+            else
+            {
+                parent->LR(parent);
+            }
+            break;
+        }
+        else if (parent->getBF() == -2)
+        {
+            if (parent->getRightSon()->getBF() <= 0)
+            {
+                parent->RR(parent);
+            }
+            else
+            {
+                parent->RL(parent);
+            }
+            break;
+        }
+        parent = parent->getParent();
+    }
+
     return StatusType::SUCCESS;
 }
 
 StatusType Ocean::remove_ship(int shipId)
 {
+    if (shipId <= 0)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+
+    shared_ptr<Ship> ship = findShip(shipId);
+
+    if (ship == nullptr || ship->getPirateCount() > 0)
+    {
+        return StatusType::FAILURE;
+    }
+
+    shared_ptr<Ship> parent = ship->getParent();
+    shared_ptr<Ship> left_son = ship->getLeftSon();
+    shared_ptr<Ship> right_son = ship->getRightSon();
+
     return StatusType::FAILURE;
 }
 

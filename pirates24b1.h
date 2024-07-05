@@ -16,6 +16,7 @@
 #include "wet1util.h"
 #include "pirate.h"
 #include "ship.h"
+#include "AVLTree.h"
 
 #include <memory>
 
@@ -27,8 +28,8 @@ const int static ONE = 0;
 class Ocean
 {
 private:
-    shared_ptr<Ship> ship_root;
-    shared_ptr<Pirate> pirate_root;
+    AVLTree<Ship, ShipCompare> ships_tree;
+    AVLTree<Pirate, PirateCompare> pirates_tree;
 
     shared_ptr<Ship> findShip(int shipId);
     shared_ptr<Pirate> findPirate(int pirateId);
