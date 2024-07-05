@@ -53,13 +53,22 @@ output_t<int> Ocean::get_treasure(int pirateId)
     }
 
     return output_t<int>(pirate->getTreasure());
-
-    return 0;
 }
 
 output_t<int> Ocean::get_cannons(int shipId)
 {
-    return 0;
+    if (shipId <= 0)
+    {
+        return output_t<int>(StatusType::INVALID_INPUT);
+    }
+
+    shared_ptr<Ship> ship = find_ship(shipId);
+    if (ship == nullptr)
+    {
+        return output_t<int>(StatusType::FAILURE);
+    }
+
+    return output_t<int>(ship->getCannonCount());
 }
 
 output_t<int> Ocean::get_richest_pirate(int shipId)
@@ -105,7 +114,7 @@ void Ocean::preorder(shared_ptr<Ship> node) const
     inorder(node->getLeftSon());
     inorder(node->getRightSon());
 }
-void Ocean::prerder(shared_ptr<Pirate> node) const
+void Ocean::preorder(shared_ptr<Pirate> node) const
 {
     if (node == nullptr)
     {
