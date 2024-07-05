@@ -75,8 +75,14 @@ StatusType Ocean::update_pirate_treasure(int pirateId, int change)
     {
         return StatusType::FAILURE;
     }
+
+    shared_ptr<Ship> ship = pirate->getShip();
+    ship->getMoneyPirates().remove(pirate);
+    pirate->setTreasure(pirate->getTreasure() + change);
+    ship->getMoneyPirates().insert(pirate);
     /**
      * remember to add remove and add of the pirate node after changing its treasure
+     * same shit for treason
      *
      *
      *
@@ -86,7 +92,6 @@ StatusType Ocean::update_pirate_treasure(int pirateId, int change)
      *
      */
 
-    pirate->setTreasure(pirate->getTreasure() + change);
     return StatusType::SUCCESS;
 }
 
@@ -137,7 +142,7 @@ output_t<int> Ocean::get_richest_pirate(int shipId)
         return output_t<int>(StatusType::FAILURE);
     }
 
-    int richest_pirate_id = ship->getMoneyPirates().root->inner_node->getMaxId();
+    int richest_pirate_id = ship->getMoneyPirates().root->max_Id.lock()->inner_node->getPirateId();
     return output_t<int>(richest_pirate_id);
 }
 

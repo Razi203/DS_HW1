@@ -14,18 +14,12 @@ class Pirate;
 class Ship
 {
 public:
-    Ship()
-    {
-    }
-    Ship(int id, int cannons)
-    {
-    }
-    ~Ship()
-    {
-    }
+    Ship::Ship(int id, int cannons) : shipId(id), cannon_count(cannons),
+                                      pirate_count(ZERO), treasure_modifier(ZERO),
+                                      first_pirate(), last_pirate() {}
+    ~Ship() {}
 
     void print(ostream &os) const;
-
     friend ostream &operator<<(ostream &os, const Ship &ship);
 
     // Setters

@@ -3,11 +3,6 @@
 
 using namespace std;
 
-Ship::Ship(int id, int cannons) : shipId(id), cannon_count(cannons),
-                                  pirate_count(ZERO), treasure_modifier(ZERO),
-                                  first_pirate(), last_pirate()
-{
-}
 void Ship::print(ostream &os) const
 {
     os << "Ship ID: " << shipId << ", Cannon Amount: " << cannon_count << endl;
