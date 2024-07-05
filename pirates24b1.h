@@ -17,11 +17,14 @@
 #include "pirate.h"
 #include "ship.h"
 
+#include <memory>
+
+using namespace std;
 class Ocean
 {
 private:
-    Ship ship_root;
-    Pirate pirate_root;
+    shared_ptr<Ship> ship_root;
+    shared_ptr<Pirate> pirate_root;
 
 public:
     // <DO-NOT-MODIFY> {
