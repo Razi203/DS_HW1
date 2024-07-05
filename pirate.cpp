@@ -30,19 +30,19 @@ void Pirate::updateHeight()
 
 void Pirate::LL(shared_ptr<Pirate> node_pointer)
 {
-    shared_ptr<Pirate> father = getFather();
+    shared_ptr<Pirate> parent = getParent();
     shared_ptr<Pirate> temp(new Pirate());
     temp->setLeftSon(getLeftSon());
     setLeftSon(nullptr);
-    if (father != nullptr)
+    if (parent != nullptr)
     {
-        if (father->getLeftSon() == node_pointer)
+        if (parent->getLeftSon() == node_pointer)
         {
-            father->setLeftSon(temp->getLeftSon());
+            parent->setLeftSon(temp->getLeftSon());
         }
         else
         {
-            father->setRightSon(temp->getLeftSon());
+            parent->setRightSon(temp->getLeftSon());
         }
     }
     setLeftSon(temp->getLeftSon()->getRightSon());
@@ -53,19 +53,19 @@ void Pirate::LL(shared_ptr<Pirate> node_pointer)
 
 void Pirate::RR(shared_ptr<Pirate> node_pointer)
 {
-    shared_ptr<Pirate> father = getFather();
+    shared_ptr<Pirate> parent = getParent();
     shared_ptr<Pirate> temp(new Pirate());
     temp->setRightSon(getRightSon());
     setRightSon(nullptr);
-    if (father != nullptr)
+    if (parent != nullptr)
     {
-        if (father->getLeftSon() == node_pointer)
+        if (parent->getLeftSon() == node_pointer)
         {
-            father->setLeftSon(temp->getRightSon());
+            parent->setLeftSon(temp->getRightSon());
         }
         else
         {
-            father->setRightSon(temp->getRightSon());
+            parent->setRightSon(temp->getRightSon());
         }
     }
     setRightSon(temp->getRightSon()->getLeftSon());
@@ -114,19 +114,19 @@ void Pirate::updateMoneyHeight()
 
 void Pirate::LLMoney(shared_ptr<Pirate> node_pointer)
 {
-    shared_ptr<Pirate> father = getMoneyFather();
+    shared_ptr<Pirate> parent = getMoneyParent();
     shared_ptr<Pirate> temp(new Pirate());
     temp->setMoneyLeftSon(getMoneyLeftSon());
     setMoneyLeftSon(nullptr);
-    if (father != nullptr)
+    if (parent != nullptr)
     {
-        if (father->getMoneyLeftSon() == node_pointer)
+        if (parent->getMoneyLeftSon() == node_pointer)
         {
-            father->setMoneyLeftSon(temp->getMoneyLeftSon());
+            parent->setMoneyLeftSon(temp->getMoneyLeftSon());
         }
         else
         {
-            father->setMoneyRightSon(temp->getMoneyLeftSon());
+            parent->setMoneyRightSon(temp->getMoneyLeftSon());
         }
     }
     setLeftSon(temp->getMoneyLeftSon()->getMoneyRightSon());
@@ -137,17 +137,17 @@ void Pirate::LLMoney(shared_ptr<Pirate> node_pointer)
 
 void Pirate::RRMoney(shared_ptr<Pirate> node_pointer)
 {
-    shared_ptr<Pirate> father = getMoneyFather();
+    shared_ptr<Pirate> parent = getMoneyParent();
     shared_ptr<Pirate> temp(new Pirate());
     temp->setMoneyRightSon(getMoneyRightSon());
     setMoneyRightSon(nullptr);
-    if (father->getMoneyLeftSon() == node_pointer)
+    if (parent->getMoneyLeftSon() == node_pointer)
     {
-        father->setMoneyLeftSon(temp->getMoneyRightSon());
+        parent->setMoneyLeftSon(temp->getMoneyRightSon());
     }
     else
     {
-        father->setMoneyRightSon(temp->getMoneyRightSon());
+        parent->setMoneyRightSon(temp->getMoneyRightSon());
     }
     setMoneyRightSon(temp->getMoneyRightSon()->getMoneyLeftSon());
     temp->getMoneyRightSon()->setMoneyLeftSon(node_pointer);
@@ -209,9 +209,9 @@ void Pirate::setRightSon(shared_ptr<Pirate> son)
 {
     right_son = son;
 }
-void Pirate::setFather(shared_ptr<Pirate> f)
+void Pirate::setParent(shared_ptr<Pirate> f)
 {
-    father = f;
+    parent = f;
 }
 void Pirate::setPrev(shared_ptr<Pirate> p)
 {
@@ -221,9 +221,9 @@ void Pirate::setNext(shared_ptr<Pirate> n)
 {
     next = n;
 }
-void Pirate::setMoneyFather(shared_ptr<Pirate> mf)
+void Pirate::setMoneyParent(shared_ptr<Pirate> mf)
 {
-    money_father = mf;
+    money_parent = mf;
 }
 void Pirate::setMoneyLeftSon(shared_ptr<Pirate> ml)
 {
@@ -272,9 +272,9 @@ shared_ptr<Pirate> Pirate::getRightSon() const
 {
     return right_son;
 }
-shared_ptr<Pirate> Pirate::getFather() const
+shared_ptr<Pirate> Pirate::getParent() const
 {
-    return father.lock();
+    return parent.lock();
 }
 shared_ptr<Pirate> Pirate::getPrev() const
 {
@@ -284,9 +284,9 @@ shared_ptr<Pirate> Pirate::getNext() const
 {
     return next.lock();
 }
-shared_ptr<Pirate> Pirate::getMoneyFather() const
+shared_ptr<Pirate> Pirate::getMoneyParent() const
 {
-    return money_father.lock();
+    return money_parent.lock();
 }
 shared_ptr<Pirate> Pirate::getMoneyLeftSon() const
 {

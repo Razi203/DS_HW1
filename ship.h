@@ -14,13 +14,13 @@ class Ship
 {
 public:
     Ship() : shipId(ZERO), cannon_count(ZERO),
-             pirate_count(ZERO), left_son(nullptr), right_son(nullptr), father(),
+             pirate_count(ZERO), left_son(nullptr), right_son(nullptr), parent(),
              first_pirate(), last_pirate(), money_root()
     {
     }
 
     Ship(int id, int cannons) : shipId(id), cannon_count(cannons),
-                                pirate_count(ZERO), treasure_modifier(ZERO), left_son(nullptr), right_son(nullptr), father(),
+                                pirate_count(ZERO), treasure_modifier(ZERO), left_son(nullptr), right_son(nullptr), parent(),
                                 first_pirate(), last_pirate(), money_root()
     {
     }
@@ -49,7 +49,7 @@ public:
     void setHeight(int h);
     void setLeftSon(shared_ptr<Ship> son);
     void setRightSon(shared_ptr<Ship> son);
-    void setFather(weak_ptr<Ship> father);
+    void setParent(weak_ptr<Ship> parent);
     void setFirstPirate(weak_ptr<Pirate> pirate);
     void setLastPirate(weak_ptr<Pirate> pirate);
     void setMoneyRoot(weak_ptr<Pirate> root);
@@ -62,7 +62,7 @@ public:
     int getTreasureModifier() const;
     shared_ptr<Ship> getLeftSon() const;
     shared_ptr<Ship> getRightSon() const;
-    shared_ptr<Ship> getFather() const;
+    shared_ptr<Ship> getParent() const;
     shared_ptr<Pirate> getFirstPirate() const;
     shared_ptr<Pirate> getLastPirate() const;
     shared_ptr<Pirate> getMoneyRoot() const;
@@ -74,7 +74,7 @@ private:
     int height;
     int treasure_modifier;
     shared_ptr<Ship> left_son, right_son;
-    weak_ptr<Ship> father;
+    weak_ptr<Ship> parent;
     weak_ptr<Pirate> first_pirate, last_pirate, money_root;
 };
 
