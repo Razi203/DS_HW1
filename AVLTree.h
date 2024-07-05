@@ -3,6 +3,9 @@
 
 using namespace std;
 
+const int static POSITIVE_UNBALANCED = 2;
+const int static NEGATIVE_UNBALANCED = -2;
+
 template <typename T>
 class AVLTreeNode
 {
@@ -36,134 +39,228 @@ class AVLTree
 {
 public:
     shared_ptr<AVLTreeNode<T>> root;
-    Compare comp;
+    Compare comp; // true if second argument is greater than first
 
-    AVLTree() : root(nullptr), comp(Compare()) {}
+    AVLTree() : root(nullptr), comp(Compare()){};
 
-    void insert(const shared_ptr<T> &inner_node)
-    {
-        root = insertRec(root, key);
-    }
+    shared_ptr<AVLTreeNode<T>> find(shared_ptr<T> node);
 
-    void remove(const shared_ptr<T> &inner_node)
-    {
-        root = insertRec(root, key);
-    }
+    bool insert(const shared_ptr<T> &inner_node);
+
+    bool remove(const shared_ptr<T> &inner_node);
 
 private:
-    shared_ptr<AVLTreeNode<T>> LL(std::shared_ptr<AVLTreeNode<T>> B)
+    shared_ptr<AVLTreeNode<T>> LL(shared_ptr<AVLTreeNode<T>> B);
+    shared_ptr<AVLTreeNode<T>> RR(shared_ptr<AVLTreeNode<T>> A);
+    shared_ptr<AVLTreeNode<T>> LR(shared_ptr<AVLTreeNode<T>> node);
+    shared_ptr<AVLTreeNode<T>> RL(shared_ptr<AVLTreeNode<T>> node);
+    shared_ptr<AVLTreeNode<T>> Rotate(shared_ptr<AVLTreeNode<T>> node);
+
+    shared_ptr<AVLTreeNode<T>> insertRec(shared_ptr<AVLTreeNode<T>> node, const std::shared_ptr<AVLTreeNode<T>> &key)
     {
-        auto A = B->left_son;
-        auto AR = A->right_son;
-        auto parent = B->parent;
-
-        B->left_son = nullptr;
-        A->right_son = B;
-
-        B->left_son = AR;
-
-        A->parent = parent;
-        B->parent = A;
-        if (AR)
-            AR->parent = B;
-        if (parent)
-        {
-            if (parent->left_son == B)
-                parent->left_son = A;
-            else
-                parent->right_son = A;
-        }
-
-        B->updateHeight();
-        A->updateHeight();
-
-        return A;
-    }
-
-    shared_ptr<AVLTreeNode<T>> RR(std::shared_ptr<AVLTreeNode<T>> A)
-    {
-        auto B = A->right_son;
-        auto BL = B->left_son;
-        auto parent = A->parent;
-
-        A->right_son = nullptr;
-        B->left_son = A;
-
-        A->right_son = BL;
-
-        B->parent = parent;
-        A->parent = B;
-        if (BL)
-            BL->parent = A;
-        if (parent)
-        {
-            if (parent->left_son == A)
-                parent->left_son = B;
-            else
-                parent->right_son = B;
-        }
-
-        A->updateHeight();
-        B->updateHeight();
-
-        return B;
-    }
-
-    shared_ptr<AVLTreeNode<T>> LR(std::shared_ptr<AVLTreeNode<T>> node)
-    {
-        node->left = rightRotate(node->left);
-        return leftRotate(node);
-    }
-
-    shared_ptr<AVLTreeNode<T>> RL(std::shared_ptr<AVLTreeNode<T>> node)
-    {
-        node->right = leftRotate(node->right);
-        return rightRotate(node);
-    }
-
-    std::shared_ptr<AVLTreeNode<T>> insertRec(std::shared_ptr<AVLTreeNode<T>> node, const std::shared_ptr<AVLTreeNode<T>> &key)
-    {
-        if (!node)
-            return key;
-
-        if (comp(key, node))
+        if (comp(key, node->inner_node))
             node->left = insertRec(node->left, key);
-        else if (comp(node, key))
+        else if (comp(node->inner_node, key))
             node->right = insertRec(node->right, key);
         else // Equal keys are not allowed in AVL tree
             return node;
 
-        // Update height of this ancestor node
-        node->height = 1 + std::max(height(node->left), height(node->right));
+        node->updateHeight();
 
-        // Get the balance factor of this ancestor node to check whether this node became unbalanced
-        int balance = getBalance(node);
-
-        // If this node becomes unbalanced, then there are 4 cases
-
-        // Left Left Case
-        if (balance > 1 && comp(key, node->left))
-            return rightRotate(node);
-
-        // Right Right Case
-        if (balance < -1 && comp(node->right, key))
-            return leftRotate(node);
-
-        // Left Right Case
-        if (balance > 1 && comp(node->left, key))
+        int balance = node->getBF();
+        if (balance == POSITIVE_UNBALANCED || balance == NEGATIVE_UNBALANCED)
         {
-            node->left = leftRotate(node->left);
-            return rightRotate(node);
+            return Rotate(node);
         }
 
-        // Right Left Case
-        if (balance < -1 && comp(key, node->right))
-        {
-            node->right = rightRotate(node->right);
-            return leftRotate(node);
-        }
-
-        // Return the (unchanged) node pointer
         return node;
     }
 };
+
+template <typename T, class Compare>
+bool AVLTree<T, Compare>::insert(const shared_ptr<T> &inner_node)
+{
+    auto node = make_shared<AVLTreeNode<T>>(inner_node);
+    if (root == nullptr)
+    {
+        root = node;
+        return true;
+    }
+
+    auto parent = find(inner_node);
+    if (parent->inner_node == inner_node)
+        return False;
+    if (comp(parent->inner_node, inner_node))
+    {
+        parent->right = node;
+    }
+    else
+    {
+        parent->left = node;
+    }
+    node->parent = parent;
+
+    while (parent != nullptr)
+    {
+        parent->updateHeight();
+        if (parent->getBF() == POSITIVE_UNBALANCED || parent->getBF() == NEGATIVE_UNBALANCED)
+        {
+            parent = Rotate(parent);
+            break;
+        }
+        node = parent;
+        parent = parent->parent;
+    }
+    if (parent == nullptr)
+        root = node;
+    return true;
+}
+
+template <typename T, class Compare>
+bool AVLTree<T, Compare>::remove(const shared_ptr<T> &inner_node)
+{
+
+    auto node = make_shared<AVLTreeNode<T>>(inner_node);
+    if (root == nullptr)
+    {
+        root = node;
+        return true;
+    }
+
+    auto parent = find(inner_node);
+    if (parent->inner_node == inner_node)
+        return False;
+    if (comp(parent->inner_node, inner_node))
+    {
+        parent->right = node;
+    }
+    else
+    {
+        parent->left = node;
+    }
+    node->parent = parent;
+
+    while (parent != nullptr)
+    {
+        parent->updateHeight();
+        if (parent->getBF() == POSITIVE_UNBALANCED || parent->getBF() == NEGATIVE_UNBALANCED)
+        {
+            parent = Rotate(parent);
+        }
+        node = parent;
+        parent = parent->parent;
+    }
+    root = node;
+    return true;
+}
+
+template <typename T, class Compare>
+shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::find(shared_ptr<T> node)
+{
+    shared_ptr<AVLTreeNode<T>> current = root;
+    shared_ptr<AVLTreeNode<T>> previous = current;
+    while (current != nullptr)
+    {
+        previous = current;
+        if (comp(node, current->inner_node))
+            current = current->left;
+        else if (comp(current->inner_node, node))
+            current = current->right;
+        else
+            return current;
+    }
+    return previous;
+}
+
+template <typename T, class Compare>
+shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::LL(shared_ptr<AVLTreeNode<T>> B)
+{
+    auto A = B->left_son;
+    auto AR = A->right_son;
+    auto parent = B->parent;
+
+    B->left_son = nullptr;
+    A->right_son = B;
+
+    B->left_son = AR;
+
+    A->parent = parent;
+    B->parent = A;
+    if (AR)
+        AR->parent = B;
+    if (parent)
+    {
+        if (parent->left_son == B)
+            parent->left_son = A;
+        else
+            parent->right_son = A;
+    }
+
+    B->updateHeight();
+    A->updateHeight();
+
+    return A;
+}
+
+template <typename T, class Compare>
+shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::RR(shared_ptr<AVLTreeNode<T>> A)
+{
+    auto B = A->right_son;
+    auto BL = B->left_son;
+    auto parent = A->parent;
+
+    A->right_son = nullptr;
+    B->left_son = A;
+
+    A->right_son = BL;
+
+    B->parent = parent;
+    A->parent = B;
+    if (BL)
+        BL->parent = A;
+    if (parent)
+    {
+        if (parent->left_son == A)
+            parent->left_son = B;
+        else
+            parent->right_son = B;
+    }
+
+    A->updateHeight();
+    B->updateHeight();
+
+    return B;
+}
+
+template <typename T, class Compare>
+shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::LR(shared_ptr<AVLTreeNode<T>> node)
+{
+    node->left = rightRotate(node->left);
+    return leftRotate(node);
+}
+
+template <typename T, class Compare>
+shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::RL(shared_ptr<AVLTreeNode<T>> node)
+{
+    node->right = leftRotate(node->right);
+    return rightRotate(node);
+}
+
+template <typename T, class Compare>
+shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::Rotate(shared_ptr<AVLTreeNode<T>> node)
+{
+    if (node->getBF() == 2)
+    {
+        if (node->left->getBF() >= 0)
+            return LL(node);
+        else
+            return LR(node);
+    }
+    else
+    {
+        if (node->right->getBF() <= 0)
+            return RR(node);
+        else
+            return RL(node);
+    }
+}
