@@ -1,7 +1,7 @@
 #include "pirates24b1.h"
 #include <iostream>
 
-Ocean::Ocean()
+Ocean::Ocean() : ship_root(nullptr), pirate_root(nullptr)
 {
 }
 
