@@ -1,15 +1,12 @@
 #include "pirates24b1.h"
-
-
+#include <iostream>
 
 Ocean::Ocean()
 {
-    
 }
 
 Ocean::~Ocean()
 {
-    
 }
 
 StatusType Ocean::add_ship(int shipId, int cannons)
@@ -57,10 +54,73 @@ output_t<int> Ocean::get_richest_pirate(int shipId)
     return 0;
 }
 
-StatusType Ocean::ships_battle(int shipId1,int shipId2)
+StatusType Ocean::ships_battle(int shipId1, int shipId2)
 {
     return StatusType::FAILURE;
 }
 
+// orders
+void Ocean::inorder(shared_ptr<Ship> node) const
+{
+    if (node == nullptr)
+    {
+        return;
+    }
+    inorder(node->getLeftSon());
+    cout << *node;
+    inorder(node->getRightSon());
+}
 
+void Ocean::inorder(shared_ptr<Pirate> node) const
+{
+    if (node == nullptr)
+    {
+        return;
+    }
+    inorder(node->getLeftSon());
+    cout << *node;
+    inorder(node->getRightSon());
+}
 
+void Ocean::preorder(shared_ptr<Ship> node) const
+{
+    if (node == nullptr)
+    {
+        return;
+    }
+    cout << *node;
+    inorder(node->getLeftSon());
+    inorder(node->getRightSon());
+}
+void Ocean::prerder(shared_ptr<Pirate> node) const
+{
+    if (node == nullptr)
+    {
+        return;
+    }
+    cout << *node;
+    inorder(node->getLeftSon());
+    inorder(node->getRightSon());
+}
+
+void Ocean::postorder(shared_ptr<Ship> node) const
+{
+    if (node == nullptr)
+    {
+        return;
+    }
+    inorder(node->getLeftSon());
+    inorder(node->getRightSon());
+    cout << *node;
+}
+
+void Ocean::postorder(shared_ptr<Pirate> node) const
+{
+    if (node == nullptr)
+    {
+        return;
+    }
+    inorder(node->getLeftSon());
+    inorder(node->getRightSon());
+    cout << *node;
+}
