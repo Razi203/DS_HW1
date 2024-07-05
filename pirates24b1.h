@@ -33,17 +33,8 @@ private:
 
     shared_ptr<Ship> findShip(int shipId);
     shared_ptr<Pirate> findPirate(int pirateId);
-    shared_ptr<Ship> findShipLocation(int shipId);
-    shared_ptr<Pirate> findPirateLocation(int pirateId);
-
-    void inorder(shared_ptr<Ship> node) const;
-    void inorder(shared_ptr<Pirate> node) const;
-
-    void preorder(shared_ptr<Ship> node) const;
-    void preorder(shared_ptr<Pirate> node) const;
-
-    void postorder(shared_ptr<Ship> node) const;
-    void postorder(shared_ptr<Pirate> node) const;
+    shared_ptr<AVLTreeNode<Ship>> Ocean::findShipLocation(int shipId);
+    shared_ptr<AVLTreeNode<Pirate>> Ocean::findPirateLocation(int pirateId);
 
 public:
     // <DO-NOT-MODIFY> {

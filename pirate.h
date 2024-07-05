@@ -70,6 +70,7 @@ public:
     int getTreasure() const;
     int getHeight() const;
     int getMoneyHeight() const;
+    int getMaxId() const;
     shared_ptr<Pirate> getLeftSon() const;
     shared_ptr<Pirate> getRightSon() const;
     shared_ptr<Pirate> getParent() const;
@@ -84,6 +85,7 @@ private:
     int pirateId;
     int treasure;
     int max_treasure;
+    int max_id;
     int height, money_height;
     shared_ptr<Pirate> left_son, right_son;
     weak_ptr<Pirate> parent;
