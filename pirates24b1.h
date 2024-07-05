@@ -33,7 +33,7 @@ private:
     void inorder(shared_ptr<Pirate> node) const;
 
     void preorder(shared_ptr<Ship> node) const;
-    void prerder(shared_ptr<Pirate> node) const;
+    void preorder(shared_ptr<Pirate> node) const;
 
     void postorder(shared_ptr<Ship> node) const;
     void postorder(shared_ptr<Pirate> node) const;
