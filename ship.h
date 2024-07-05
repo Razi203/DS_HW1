@@ -20,7 +20,7 @@ public:
     }
 
     Ship(int id, int cannons) : shipId(id), cannon_count(cannons),
-                                pirate_count(ZERO), left_son(nullptr), right_son(nullptr), father(),
+                                pirate_count(ZERO), treasure_modifier(ZERO), left_son(nullptr), right_son(nullptr), father(),
                                 first_pirate(), last_pirate(), money_root()
     {
     }
@@ -66,11 +66,17 @@ public:
     shared_ptr<Pirate> getLastPirate() const;
     shared_ptr<Pirate> getMoneyRoot() const;
 
+    int getTreasureModifier() const
+    {
+        return treasure_modifier;
+    }
+
 private:
     int shipId;
     int cannon_count;
     int pirate_count;
     int height;
+    int treasure_modifier;
     shared_ptr<Ship> left_son, right_son;
     weak_ptr<Ship> father;
     weak_ptr<Pirate> first_pirate, last_pirate, money_root;

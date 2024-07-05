@@ -31,12 +31,68 @@ StatusType Ocean::remove_pirate(int pirateId)
 
 StatusType Ocean::treason(int sourceShipId, int destShipId)
 {
-    return StatusType::FAILURE;
+    if (sourceShipId <= ZERO || destShipId <= ZERO || sourceShipId == destShipId)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+
+    shared_ptr<Ship> source_ship = findShip(sourceShipId);
+    shared_ptr<Ship> dest_ship = findShip(destShipId);
+    int pirate_count = source_ship->getPirateCount();
+
+    if (source_ship == nullptr || dest_ship == nullptr || pirate_count == ZERO)
+    {
+        return StatusType::FAILURE;
+    }
+
+    shared_ptr<Pirate> first_pirate = source_ship->getFirstPirate();
+    shared_ptr<Pirate> second_pirate = first_pirate->getNext();
+
+    second_pirate->setPrev(nullptr);
+    first_pirate->setNext(nullptr);
+    first_pirate->setPrev(dest_ship->getLastPirate());
+    first_pirate->getPrev()->setNext(first_pirate);
+    first_pirate->setShip(dest_ship);
+
+    dest_ship->setLastPirate(first_pirate);
+    dest_ship->setFirstPirate(second_pirate);
+
+    source_ship->setPirateCount(source_ship->getPirateCount() - ONE);
+    dest_ship->setPirateCount(dest_ship->getPirateCount() + ONE);
+
+    int source_trasure_modifier = source_ship->getTreasureModifier();
+    int dest_trasure_modifier = dest_ship->getTreasureModifier();
+    first_pirate->setTreasure(first_pirate->getTreasure() + source_trasure_modifier - dest_trasure_modifier);
+
+    return StatusType::SUCCESS;
 }
 
 StatusType Ocean::update_pirate_treasure(int pirateId, int change)
 {
-    return StatusType::FAILURE;
+    if (pirateId <= 0)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+
+    shared_ptr<Pirate> pirate = findPirate(pirateId);
+
+    if (pirate == nullptr)
+    {
+        return StatusType::FAILURE;
+    }
+    /**
+     * remember to add remove and add of the pirate node after changing its treasure
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
+
+    pirate->setTreasure(pirate->getTreasure() + change);
+    return StatusType::SUCCESS;
 }
 
 output_t<int> Ocean::get_treasure(int pirateId)
@@ -46,13 +102,14 @@ output_t<int> Ocean::get_treasure(int pirateId)
         return output_t<int>(StatusType::INVALID_INPUT);
     }
 
-    shared_ptr<Pirate> pirate = find_pirate(pirateId);
+    shared_ptr<Pirate> pirate = findPirate(pirateId);
     if (pirate == nullptr)
     {
         return output_t<int>(StatusType::FAILURE);
     }
 
-    return output_t<int>(pirate->getTreasure());
+    int modifier = pirate->getShip()->getTreasureModifier();
+    return output_t<int>(pirate->getTreasure() + modifier);
 }
 
 output_t<int> Ocean::get_cannons(int shipId)
@@ -62,7 +119,7 @@ output_t<int> Ocean::get_cannons(int shipId)
         return output_t<int>(StatusType::INVALID_INPUT);
     }
 
-    shared_ptr<Ship> ship = find_ship(shipId);
+    shared_ptr<Ship> ship = findShip(shipId);
     if (ship == nullptr)
     {
         return output_t<int>(StatusType::FAILURE);
@@ -147,7 +204,7 @@ void Ocean::postorder(shared_ptr<Pirate> node) const
     cout << *node;
 }
 
-shared_ptr<Ship> Ocean::find_ship(int shipId)
+shared_ptr<Ship> Ocean::findShip(int shipId)
 {
     shared_ptr<Ship> current = ship_root;
     while (current)
@@ -172,7 +229,7 @@ shared_ptr<Ship> Ocean::find_ship(int shipId)
     return nullptr;
 }
 
-shared_ptr<Pirate> Ocean::find_pirate(int pirateId)
+shared_ptr<Pirate> Ocean::findPirate(int pirateId)
 {
     shared_ptr<Pirate> current = pirate_root;
     while (current)
