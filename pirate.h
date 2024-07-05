@@ -14,7 +14,7 @@ class Pirate
 {
 
 public:
-    Pirate() {}
+    Pirate(int id, int value) : pirateId(id), treasure(value), left_son(nullptr), right_son(nullptr), father(weak_ptr<Pirate>()), prev(weak_ptr<Pirate>()), next(weak_ptr<Pirate>()), money_father(weak_ptr<Pirate>()), money_left_son(weak_ptr<Pirate>()), money_right_son(weak_ptr<Pirate>()), ship(weak_ptr<Ship>()) {}
 
     ~Pirate() {}
 
