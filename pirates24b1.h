@@ -26,6 +26,9 @@ private:
     shared_ptr<Ship> ship_root;
     shared_ptr<Pirate> pirate_root;
 
+    shared_ptr<Ship> find_ship(int shipId);
+    shared_ptr<Pirate> find_pirate(int pirateId);
+
     void inorder(shared_ptr<Ship> node) const;
     void inorder(shared_ptr<Pirate> node) const;
 
