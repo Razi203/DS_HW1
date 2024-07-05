@@ -15,7 +15,7 @@ StatusType Ocean::add_ship(int shipId, int cannons)
     {
         return StatusType::INVALID_INPUT;
     }
-    shared_ptr<Ship> location = find_ship_location(shipId);
+    shared_ptr<Ship> location = findShipLocation(shipId);
     if (location->getShipId() == shipId)
     {
         return StatusType::FAILURE;
@@ -232,7 +232,7 @@ void Ocean::postorder(shared_ptr<Pirate> node) const
     cout << *node;
 }
 
-shared_ptr<Ship> Ocean::find_ship_location(int shipId)
+shared_ptr<Ship> Ocean::findShipLocation(int shipId)
 {
     shared_ptr<Ship> current = ship_root;
     if (current == nullptr)
@@ -258,7 +258,7 @@ shared_ptr<Ship> Ocean::find_ship_location(int shipId)
     return previous;
 }
 
-shared_ptr<Pirate> Ocean::find_pirate_location(int pirateId)
+shared_ptr<Pirate> Ocean::findPirateLocation(int pirateId)
 {
     shared_ptr<Pirate> current = pirate_root;
     if (current == nullptr)
@@ -287,17 +287,17 @@ shared_ptr<Pirate> Ocean::find_pirate_location(int pirateId)
     return previous;
 }
 
-shared_ptr<Ship> Ocean::find_ship(int shipId)
+shared_ptr<Ship> Ocean::findShip(int shipId)
 {
-    shared_ptr<Ship> current = find_ship_location(shipId);
+    shared_ptr<Ship> current = findShipLocation(shipId);
     if (current == nullptr || current->getShipId() != shipId)
         return nullptr;
     return current;
 }
 
-shared_ptr<Pirate> Ocean::find_pirate(int pirateId)
+shared_ptr<Pirate> Ocean::findPirate(int pirateId)
 {
-    shared_ptr<Pirate> current = find_pirate_location(pirateId);
+    shared_ptr<Pirate> current = findPirateLocation(pirateId);
     if (current == nullptr || current->getPirateId() != pirateId)
         return nullptr;
     return current;
