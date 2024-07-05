@@ -264,6 +264,11 @@ int Pirate::getMoneyHeight() const
     return money_height;
 }
 
+int Pirate::getMaxId() const
+{
+    return max_id;
+}
+
 shared_ptr<Pirate> Pirate::getLeftSon() const
 {
     return left_son;

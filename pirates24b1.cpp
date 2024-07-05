@@ -66,9 +66,8 @@ StatusType Ocean::treason(int sourceShipId, int destShipId)
 
     shared_ptr<Ship> source_ship = findShip(sourceShipId);
     shared_ptr<Ship> dest_ship = findShip(destShipId);
-    int pirate_count = source_ship->getPirateCount();
 
-    if (source_ship == nullptr || dest_ship == nullptr || pirate_count == ZERO)
+    if (source_ship == nullptr || dest_ship == nullptr || !(source_ship->getPirateCount()))
     {
         return StatusType::FAILURE;
     }
@@ -158,7 +157,20 @@ output_t<int> Ocean::get_cannons(int shipId)
 
 output_t<int> Ocean::get_richest_pirate(int shipId)
 {
-    return 0;
+    if (shipId <= ZERO)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+
+    shared_ptr<Ship> ship = findShip(shipId);
+
+    if (ship == nullptr || !(ship->getPirateCount()))
+    {
+        return output_t<int>(StatusType::FAILURE);
+    }
+
+    int richest_pirate_id = ship->getMoneyRoot()->getMaxId();
+    return output_t<int>(richest_pirate_id);
 }
 
 StatusType Ocean::ships_battle(int shipId1, int shipId2)
