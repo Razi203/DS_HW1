@@ -155,6 +155,11 @@ int Ship::getHeight() const
     return height;
 }
 
+int Ship::getTreasureModifier() const
+{
+    return treasure_modifier;
+}
+
 shared_ptr<Ship> Ship::getLeftSon() const
 {
     return left_son;
