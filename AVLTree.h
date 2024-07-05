@@ -55,26 +55,6 @@ private:
     shared_ptr<AVLTreeNode<T>> LR(shared_ptr<AVLTreeNode<T>> node);
     shared_ptr<AVLTreeNode<T>> RL(shared_ptr<AVLTreeNode<T>> node);
     shared_ptr<AVLTreeNode<T>> Rotate(shared_ptr<AVLTreeNode<T>> node);
-
-    shared_ptr<AVLTreeNode<T>> insertRec(shared_ptr<AVLTreeNode<T>> node, const std::shared_ptr<AVLTreeNode<T>> &key)
-    {
-        if (comp(key, node->inner_node))
-            node->left = insertRec(node->left, key);
-        else if (comp(node->inner_node, key))
-            node->right = insertRec(node->right, key);
-        else // Equal keys are not allowed in AVL tree
-            return node;
-
-        node->updateHeight();
-
-        int balance = node->getBF();
-        if (balance == POSITIVE_UNBALANCED || balance == NEGATIVE_UNBALANCED)
-        {
-            return Rotate(node);
-        }
-
-        return node;
-    }
 };
 
 template <typename T, class Compare>
