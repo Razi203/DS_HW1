@@ -30,17 +30,17 @@ void Ship::updateHeight()
 
 void Ship::LL(shared_ptr<Ship> node_pointer)
 {
-    shared_ptr<Ship> father = getFather();
+    shared_ptr<Ship> parent = getParent();
     shared_ptr<Ship> temp(new Ship());
     temp->setLeftSon(getLeftSon());
     setLeftSon(nullptr);
-    if (father->getLeftSon() == node_pointer)
+    if (parent->getLeftSon() == node_pointer)
     {
-        father->setLeftSon(temp->getLeftSon());
+        parent->setLeftSon(temp->getLeftSon());
     }
     else
     {
-        father->setRightSon(temp->getLeftSon());
+        parent->setRightSon(temp->getLeftSon());
     }
     setLeftSon(temp->getLeftSon()->getRightSon());
     temp->getLeftSon()->setRightSon(node_pointer);
@@ -50,17 +50,17 @@ void Ship::LL(shared_ptr<Ship> node_pointer)
 
 void Ship::RR(shared_ptr<Ship> node_pointer)
 {
-    shared_ptr<Ship> father = getFather();
+    shared_ptr<Ship> parent = getParent();
     shared_ptr<Ship> temp(new Ship());
     temp->setRightSon(getRightSon());
     setRightSon(nullptr);
-    if (father->getLeftSon() == node_pointer)
+    if (parent->getLeftSon() == node_pointer)
     {
-        father->setLeftSon(temp->getRightSon());
+        parent->setLeftSon(temp->getRightSon());
     }
     else
     {
-        father->setRightSon(temp->getRightSon());
+        parent->setRightSon(temp->getRightSon());
     }
     setRightSon(temp->getRightSon()->getLeftSon());
     temp->getRightSon()->setLeftSon(node_pointer);
@@ -117,9 +117,9 @@ void Ship::setRightSon(shared_ptr<Ship> son)
 {
     right_son = son;
 }
-void Ship::setFather(weak_ptr<Ship> father)
+void Ship::setParent(weak_ptr<Ship> parent)
 {
-    this->father = father;
+    this->parent = parent;
 }
 void Ship::setFirstPirate(weak_ptr<Pirate> pirate)
 {
@@ -168,9 +168,9 @@ shared_ptr<Ship> Ship::getRightSon() const
 {
     return right_son;
 }
-shared_ptr<Ship> Ship::getFather() const
+shared_ptr<Ship> Ship::getParent() const
 {
-    return father.lock();
+    return parent.lock();
 }
 shared_ptr<Pirate> Ship::getFirstPirate() const
 {
