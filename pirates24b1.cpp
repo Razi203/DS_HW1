@@ -66,9 +66,8 @@ StatusType Ocean::treason(int sourceShipId, int destShipId)
 
     shared_ptr<Ship> source_ship = findShip(sourceShipId);
     shared_ptr<Ship> dest_ship = findShip(destShipId);
-    int pirate_count = source_ship->getPirateCount();
 
-    if (source_ship == nullptr || dest_ship == nullptr || pirate_count == ZERO)
+    if (source_ship == nullptr || dest_ship == nullptr || !(source_ship->getPirateCount()))
     {
         return StatusType::FAILURE;
     }
@@ -158,12 +157,57 @@ output_t<int> Ocean::get_cannons(int shipId)
 
 output_t<int> Ocean::get_richest_pirate(int shipId)
 {
-    return 0;
+    if (shipId <= ZERO)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+
+    shared_ptr<Ship> ship = findShip(shipId);
+
+    if (ship == nullptr || !(ship->getPirateCount()))
+    {
+        return output_t<int>(StatusType::FAILURE);
+    }
+
+    int richest_pirate_id = ship->getMoneyRoot()->getMaxId();
+    return output_t<int>(richest_pirate_id);
 }
 
 StatusType Ocean::ships_battle(int shipId1, int shipId2)
 {
-    return StatusType::FAILURE;
+    if (shipId1 <= ZERO || shipId2 <= ZERO || shipId1 == shipId2)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+
+    shared_ptr<Ship> ship1 = findShip(shipId1);
+    shared_ptr<Ship> ship2 = findShip(shipId2);
+
+    if (ship1 == nullptr || ship2 == nullptr)
+    {
+        return StatusType::FAILURE;
+    }
+
+    int p1 = ship1->getPirateCount();
+    int p2 = ship2->getPirateCount();
+    int c1 = ship1->getCannonCount();
+    int c2 = ship2->getCannonCount();
+
+    int min_ship1 = (p1 >= c1) ? c1 : p1;
+    int min_ship2 = (p2 >= c2) ? c2 : p2;
+
+    if (min_ship1 > min_ship2)
+    {
+        ship1->setTreasureModifier(ship1->getTreasureModifier() + p2);
+        ship2->setTreasureModifier(ship2->getTreasureModifier() - p1);
+    }
+    else if (min_ship2 > min_ship1)
+    {
+        ship1->setTreasureModifier(ship1->getTreasureModifier() - p2);
+        ship2->setTreasureModifier(ship2->getTreasureModifier() + p1);
+    }
+
+    return StatusType::SUCCESS;
 }
 
 // orders
