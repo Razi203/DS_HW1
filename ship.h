@@ -13,8 +13,14 @@ class Pirate;
 class Ship
 {
 public:
+    Ship() : shipId(ZERO), cannon_count(ZERO),
+             pirate_count(ZERO), left_son(nullptr), right_son(nullptr), father(),
+             first_pirate(), last_pirate(), money_root()
+    {
+    }
+
     Ship(int id, int cannons) : shipId(id), cannon_count(cannons),
-                                pirate_count(0), left_son(nullptr), right_son(nullptr), father(),
+                                pirate_count(ZERO), left_son(nullptr), right_son(nullptr), father(),
                                 first_pirate(), last_pirate(), money_root()
     {
     }
@@ -27,97 +33,38 @@ public:
 
     friend ostream &operator<<(ostream &os, const Ship &ship);
 
+    void LL(shared_ptr<Ship> node_pointer);
+    void RR(shared_ptr<Ship> node_pointer);
+    void RL(shared_ptr<Ship> node_pointer);
+    void LR(shared_ptr<Ship> node_pointer);
+
+    void updateHeight();
+
+    int getBF();
+
     // Setters
-    void setShipId(int id)
-    {
-        shipId = id;
-    }
-
-    void setCannonCount(int count)
-    {
-        cannon_count = count;
-    }
-
-    void setPirateCount(int count)
-    {
-        pirate_count = count;
-    }
-
-    void setHeight(int h)
-    {
-        height = h;
-    }
-
-    void setLeftSon(shared_ptr<Ship> son)
-    {
-        left_son = son;
-    }
-    void setRightSon(shared_ptr<Ship> son)
-    {
-        right_son = son;
-    }
-    void setFather(weak_ptr<Ship> father)
-    {
-        this->father = father;
-    }
-    void setFirstPirate(weak_ptr<Pirate> pirate)
-    {
-        first_pirate = pirate;
-    }
-    void setLastPirate(weak_ptr<Pirate> pirate)
-    {
-        last_pirate = pirate;
-    }
-    void setMoneyRoot(weak_ptr<Pirate> root)
-    {
-        money_root = root;
-    }
+    void setShipId(int id);
+    void setCannonCount(int count);
+    void setPirateCount(int count);
+    void setHeight(int h);
+    void setLeftSon(shared_ptr<Ship> son);
+    void setRightSon(shared_ptr<Ship> son);
+    void setFather(weak_ptr<Ship> father);
+    void setFirstPirate(weak_ptr<Pirate> pirate);
+    void setLastPirate(weak_ptr<Pirate> pirate);
+    void setMoneyRoot(weak_ptr<Pirate> root);
 
     // Getters
-    int getShipId() const
-    {
-        return shipId;
-    }
-
-    int getCannonCount() const
-    {
-        return cannon_count;
-    }
-
-    int getPirateCount() const
-    {
-        return pirate_count;
-    }
-
-    int getHeight() const
-    {
-        return height;
-    }
-
-    shared_ptr<Ship> getLeftSon() const
-    {
-        return left_son;
-    }
-    shared_ptr<Ship> getRightSon() const
-    {
-        return right_son;
-    }
-    weak_ptr<Ship> getFather() const
-    {
-        return father;
-    }
-    weak_ptr<Pirate> getFirstPirate() const
-    {
-        return first_pirate;
-    }
-    weak_ptr<Pirate> getLastPirate() const
-    {
-        return last_pirate;
-    }
-    weak_ptr<Pirate> getMoneyRoot() const
-    {
-        return money_root;
-    }
+    int getShipId() const;
+    int getCannonCount() const;
+    int getPirateCount() const;
+    int getHeight() const;
+    shared_ptr<Ship> getLeftSon() const;
+    shared_ptr<Ship> getRightSon() const;
+    shared_ptr<Ship> getFather() const;
+    shared_ptr<Pirate> getFirstPirate() const;
+    shared_ptr<Pirate> getLastPirate() const;
+    shared_ptr<Pirate> getMoneyRoot() const;
 
 private:
     int shipId;

@@ -20,6 +20,8 @@
 #include <memory>
 
 using namespace std;
+
+const int static ZERO = 0;
 class Ocean
 {
 private:
