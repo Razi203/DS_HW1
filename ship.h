@@ -53,6 +53,7 @@ public:
     void setFirstPirate(weak_ptr<Pirate> pirate);
     void setLastPirate(weak_ptr<Pirate> pirate);
     void setMoneyRoot(weak_ptr<Pirate> root);
+    void setTreasureModifier(int change);
 
     // Getters
     int getShipId() const;

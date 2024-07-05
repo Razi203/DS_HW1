@@ -133,6 +133,10 @@ void Ship::setMoneyRoot(weak_ptr<Pirate> root)
 {
     money_root = root;
 }
+void Ship::setTreasureModifier(int change)
+{
+    treasure_modifier = change;
+}
 
 // Getters
 int Ship::getShipId() const
