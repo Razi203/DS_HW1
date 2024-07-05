@@ -1,1 +1,3 @@
-wooo
+int main{
+    
+}
