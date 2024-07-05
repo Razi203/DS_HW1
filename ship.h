@@ -42,6 +42,12 @@ public:
     {
         pirate_count = count;
     }
+
+    void setHeight(int h)
+    {
+        height = h;
+    }
+
     void setLeftSon(shared_ptr<Ship> son)
     {
         left_son = son;
@@ -82,6 +88,12 @@ public:
     {
         return pirate_count;
     }
+
+    int getHeight() const
+    {
+        return height;
+    }
+
     shared_ptr<Ship> getLeftSon() const
     {
         return left_son;
@@ -111,6 +123,7 @@ private:
     int shipId;
     int cannon_count;
     int pirate_count;
+    int height;
     shared_ptr<Ship> left_son, right_son;
     weak_ptr<Ship> father;
     weak_ptr<Pirate> first_pirate, last_pirate, money_root;

@@ -38,6 +38,16 @@ public:
         max_treasure = value;
     }
 
+    void setHeight(int h)
+    {
+        height = h;
+    }
+
+    void setMoneyHeight(int mh)
+    {
+        money_height = mh;
+    }
+
     void setLeftSon(shared_ptr<Pirate> son)
     {
         left_son = son;
@@ -91,6 +101,16 @@ public:
         return treasure;
     }
 
+    int getHeight() const
+    {
+        return height;
+    }
+
+    int getMoneyHeight() const
+    {
+        return money_height;
+    }
+
     shared_ptr<Pirate> getLeftSon() const
     {
         return left_son;
@@ -132,6 +152,7 @@ private:
     int pirateId;
     int treasure;
     int max_treasure;
+    int height, money_height;
     shared_ptr<Pirate> left_son, right_son;
     weak_ptr<Pirate> father;
     weak_ptr<Pirate> prev, next;
