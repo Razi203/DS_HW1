@@ -69,12 +69,14 @@ public:
     void generateDotFile(const std::string &filename) const
     {
         std::ofstream file("assets/" + filename);
-        file << "digraph AVLTree {" << std::endl;
+        file << "digraph AVLTree {\n";
+        file << "    node [shape=circle];\n";
         if (root)
         {
+            file << "    \"" << *(root->inner_node) << "\";\n";
             generateDotFileHelper(file, root);
         }
-        file << "}" << std::endl;
+        file << "}\n";
     }
 
 private:
@@ -111,7 +113,7 @@ private:
         updateMaxId(node);
     }
 
-    void removeOnlyChild(shared_ptr<AVLTreeNode<T>> node);
+    shared_ptr<AVLTreeNode<T>> removeOnlyChild(shared_ptr<AVLTreeNode<T>> node);
 
     void generateDotFileHelper(std::ofstream &file, std::shared_ptr<AVLTreeNode<T>> node) const
     {
@@ -215,19 +217,19 @@ bool AVLTree<T, Compare>::remove(const shared_ptr<T> &inner_node)
     if (node->inner_node != inner_node)
         return false;
 
+    auto parent = node->parent.lock();
     if (node->left_son == nullptr || node->right_son == nullptr)
     {
-        removeOnlyChild(node);
+        node = removeOnlyChild(node);
     }
     else
     {
         auto next = nextNode(node);
         node->inner_node = next->inner_node;
         node = next;
-        removeOnlyChild(node);
+        parent = node->parent.lock();
+        node = removeOnlyChild(node);
     }
-
-    auto parent = node->parent.lock();
 
     while (parent != nullptr)
     {
@@ -357,7 +359,7 @@ shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::Rotate(shared_ptr<AVLTreeNode<T>
 }
 
 template <typename T, class Compare>
-void AVLTree<T, Compare>::removeOnlyChild(shared_ptr<AVLTreeNode<T>> node)
+shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::removeOnlyChild(shared_ptr<AVLTreeNode<T>> node)
 {
     shared_ptr<AVLTreeNode<T>> temp;
     if (node->left_son == nullptr && node->right_son == nullptr)
@@ -376,18 +378,28 @@ void AVLTree<T, Compare>::removeOnlyChild(shared_ptr<AVLTreeNode<T>> node)
     if (node->parent.lock() == nullptr)
     {
         root = temp;
+        if (temp != nullptr)
+            temp->parent.reset();
     }
     else
     {
         if (node->parent.lock()->left_son == node)
-
+        {
             node->parent.lock()->left_son = temp;
+        }
         else
+        {
             node->parent.lock()->right_son = temp;
+        }
 
         if (temp != nullptr)
             temp->parent = node->parent.lock();
     }
+
+    node->parent.reset();
+    node->left_son = nullptr;
+    node->right_son = nullptr;
+    return temp;
 }
 
 #endif // AVLTree_H_

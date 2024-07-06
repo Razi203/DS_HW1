@@ -1,7 +1,0 @@
-digraph AVLTree {
-    "Pirate ID: 42, Treasure: 30" -> "Pirate ID: 4, Treasure: 30";
-    "Pirate ID: 4, Treasure: 30" -> "Pirate ID: 2, Treasure: 20";
-    "Pirate ID: 4, Treasure: 30" -> "Pirate ID: 5, Treasure: 10";
-    "Pirate ID: 42, Treasure: 30" -> "Pirate ID: 54, Treasure: 30";
-    "Pirate ID: 54, Treasure: 30" -> "Pirate ID: 59, Treasure: 10";
-}

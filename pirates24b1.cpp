@@ -108,6 +108,7 @@ StatusType Ocean::remove_pirate(int pirateId)
     }
     auto ship = pirate->getShip();
     pirates_tree.remove(pirate);
+    ship->getMoneyPirates().remove(pirate);
 
     if (ship->getPirateCount() == ONE)
     {
@@ -132,7 +133,6 @@ StatusType Ocean::remove_pirate(int pirateId)
     pirate->setShip(nullptr);
     pirate->setNext(nullptr);
     pirate->setPrev(nullptr);
-    ship->getMoneyPirates().remove(pirate);
     ship->setPirateCount(ship->getPirateCount() - ONE);
     return StatusType::SUCCESS;
 }
