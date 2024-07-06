@@ -31,6 +31,10 @@ private:
     shared_ptr<AVLTreeNode<Pirate>> findPirateLocation(int pirateId);
 
 public:
+    void print_avl_tree() const
+    {
+        ships_tree.print();
+    }
     AVLTree<Ship, ShipCompare> ships_tree;
     AVLTree<Pirate, PirateCompare> pirates_tree;
     // <DO-NOT-MODIFY> {

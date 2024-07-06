@@ -50,6 +50,11 @@ void Ship::setTreasureModifier(int change)
 }
 
 // Getters
+int Ship::getId() const
+{
+    return shipId;
+}
+
 int Ship::getShipId() const
 {
     return shipId;

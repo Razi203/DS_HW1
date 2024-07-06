@@ -30,6 +30,7 @@ public:
     void setShip(shared_ptr<Ship> s);
 
     // Getters
+    int getId() const;
     int getPirateId() const;
     int getTreasure() const;
     shared_ptr<Pirate> getPrev() const;

@@ -51,6 +51,34 @@ template <typename T, class Compare>
 class AVLTree
 {
 public:
+    void print() const
+    {
+        if (!root)
+        {
+            std::cout << "Tree is empty.\n";
+            return;
+        }
+        printTree(root, 0);
+    }
+    void printTree(shared_ptr<AVLTreeNode<T>> node, int space) const
+    {
+        if (!node)
+            return;
+
+        const int COUNT = 5;
+        space += COUNT;
+
+        printTree(node->right_son, space);
+
+        std::cout << std::endl;
+        for (int i = COUNT; i < space; ++i)
+        {
+            std::cout << " ";
+        }
+        std::cout << node->inner_node->getId() << "\n";
+
+        printTree(node->left_son, space);
+    }
     shared_ptr<AVLTreeNode<T>> root;
     Compare comp; // true if first argument is greater than second
 

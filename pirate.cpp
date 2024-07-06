@@ -43,6 +43,11 @@ void Pirate::setShip(shared_ptr<Ship> s)
 
 // Getters --------------------------------------------
 
+int Pirate::getId() const
+{
+    return pirateId;
+}
+
 int Pirate::getPirateId() const
 {
     return pirateId;

@@ -31,6 +31,7 @@ public:
     void setTreasureModifier(int change);
 
     // Getters
+    int getId() const;
     int getShipId() const;
     int getCannonCount() const;
     int getPirateCount() const;
