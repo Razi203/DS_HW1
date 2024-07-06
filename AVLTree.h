@@ -62,23 +62,6 @@ public:
 
     bool remove(const shared_ptr<T> &inner_node);
 
-    void inOrder(shared_ptr<AVLTreeNode<T>> node) const;
-    void preOrder(shared_ptr<AVLTreeNode<T>> node) const;
-    void postOrder(shared_ptr<AVLTreeNode<T>> node) const;
-
-    void generateDotFile(const std::string &filename) const
-    {
-        std::ofstream file("assets/" + filename);
-        file << "digraph AVLTree {\n";
-        file << "    node [shape=circle];\n";
-        if (root)
-        {
-            file << "    \"" << *(root->inner_node) << "\";\n";
-            generateDotFileHelper(file, root);
-        }
-        file << "}\n";
-    }
-
 private:
     shared_ptr<AVLTreeNode<T>> LL(shared_ptr<AVLTreeNode<T>> B);
     shared_ptr<AVLTreeNode<T>> RR(shared_ptr<AVLTreeNode<T>> A);
@@ -114,57 +97,7 @@ private:
     }
 
     shared_ptr<AVLTreeNode<T>> removeOnlyChild(shared_ptr<AVLTreeNode<T>> node);
-
-    void generateDotFileHelper(std::ofstream &file, std::shared_ptr<AVLTreeNode<T>> node) const
-    {
-        if (node->left_son)
-        {
-            file << "    \"" << *(node->inner_node) << "\" -> \"" << *(node->left_son->inner_node) << "\";" << std::endl;
-            generateDotFileHelper(file, (node->left_son));
-        }
-        if (node->right_son)
-        {
-            file << "    \"" << *(node->inner_node) << "\" -> \"" << *(node->right_son->inner_node) << "\";" << std::endl;
-            generateDotFileHelper(file, (node->right_son));
-        }
-    }
 };
-
-template <typename T, class Compare>
-void AVLTree<T, Compare>::inOrder(shared_ptr<AVLTreeNode<T>> node) const
-{
-    if (node == nullptr)
-    {
-        return;
-    }
-    inOrder(node->left_son);
-    cout << *(node->inner_node) << endl;
-    inOrder(node->right_son);
-}
-
-template <typename T, class Compare>
-void AVLTree<T, Compare>::preOrder(shared_ptr<AVLTreeNode<T>> node) const
-{
-    if (node == nullptr)
-    {
-        return;
-    }
-    cout << *(node->inner_node) << endl;
-    preOrder(node->left_son);
-    preOrder(node->right_son);
-}
-
-template <typename T, class Compare>
-void AVLTree<T, Compare>::postOrder(shared_ptr<AVLTreeNode<T>> node) const
-{
-    if (node == nullptr)
-    {
-        return;
-    }
-    postOrder(node->left_son);
-    postOrder(node->right_son);
-    cout << *(node->inner_node) << endl;
-}
 
 template <typename T, class Compare>
 bool AVLTree<T, Compare>::insert(const shared_ptr<T> &inner_node)
