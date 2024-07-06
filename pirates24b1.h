@@ -25,14 +25,13 @@ using namespace std;
 class Ocean
 {
 private:
-    shared_ptr<Ship> findShip(int shipId);
-    shared_ptr<Pirate> findPirate(int pirateId);
-    shared_ptr<AVLTreeNode<Ship>> findShipLocation(int shipId);
-    shared_ptr<AVLTreeNode<Pirate>> findPirateLocation(int pirateId);
-
 public:
     AVLTree<Ship, ShipCompare> ships_tree;
     AVLTree<Pirate, PirateCompare> pirates_tree;
+    shared_ptr<AVLTreeNode<Pirate>> findPirateLocation(int pirateId);
+    shared_ptr<AVLTreeNode<Ship>> findShipLocation(int shipId);
+    shared_ptr<Ship> findShip(int shipId);
+    shared_ptr<Pirate> findPirate(int pirateId);
     // <DO-NOT-MODIFY> {
 
     Ocean();
