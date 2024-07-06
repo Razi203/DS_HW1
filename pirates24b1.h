@@ -22,21 +22,17 @@
 
 using namespace std;
 
-const int static ZERO = 0;
-const int static ONE = 0;
-
 class Ocean
 {
 private:
-    AVLTree<Ship, ShipCompare> ships_tree;
-    AVLTree<Pirate, PirateCompare> pirates_tree;
-
     shared_ptr<Ship> findShip(int shipId);
     shared_ptr<Pirate> findPirate(int pirateId);
-    shared_ptr<AVLTreeNode<Ship>> Ocean::findShipLocation(int shipId);
-    shared_ptr<AVLTreeNode<Pirate>> Ocean::findPirateLocation(int pirateId);
+    shared_ptr<AVLTreeNode<Ship>> findShipLocation(int shipId);
+    shared_ptr<AVLTreeNode<Pirate>> findPirateLocation(int pirateId);
 
 public:
+    AVLTree<Ship, ShipCompare> ships_tree;
+    AVLTree<Pirate, PirateCompare> pirates_tree;
     // <DO-NOT-MODIFY> {
 
     Ocean();

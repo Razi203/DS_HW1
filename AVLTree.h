@@ -1,24 +1,36 @@
+#ifndef AVLTree_H_
+#define AVLTree_H_
+
 #include <memory>
-#include "pirates24b1.h"
+#include <iostream>
+#include "pirate.h"
+#include "consts.h"
+
+// aditions
+#include <iostream>
+#include <fstream>
+#include <memory>
+#include <string>
+#include <queue>
 
 using namespace std;
-
-const int static POSITIVE_UNBALANCED = 2;
-const int static NEGATIVE_UNBALANCED = -2;
 
 template <typename T>
 class AVLTreeNode
 {
 public:
     shared_ptr<T> inner_node;
+    int height;
     shared_ptr<AVLTreeNode<T>> left_son;
     shared_ptr<AVLTreeNode<T>> right_son;
     weak_ptr<AVLTreeNode<T>> parent;
     weak_ptr<AVLTreeNode<T>> max_Id;
-    int height;
 
     AVLTreeNode(const shared_ptr<T> &node)
-        : inner_node(node), left_son(nullptr), right_son(nullptr), parent(nullptr), height(ZERO) {}
+        : inner_node(node), height(MINUS_ONE), left_son(nullptr), right_son(nullptr)
+    {
+        parent.reset();
+    }
 
     void updateHeight()
     {
@@ -29,40 +41,9 @@ public:
 
     int getBF() const
     {
-        int left_height = (left_son != nullptr) ? left_son->getHeight() : -1;
-        int right_height = (right_son != nullptr) ? right_son->getHeight() : -1;
+        int left_height = (left_son != nullptr) ? left_son->height : -1;
+        int right_height = (right_son != nullptr) ? right_son->height : -1;
         return left_height - right_height;
-    }
-
-    void removeOnlyChild()
-    {
-        shared_ptr<AVLTreeNode<T>> temp;
-        if (node->left == nullptr && node->right == nullptr)
-        {
-            temp = nullptr:
-        }
-        else if (node->left == nullptr)
-        {
-            temp = node->right;
-        }
-        else
-        {
-            temp = node->left;
-        }
-
-        if (parent == nullptr)
-        {
-            root = temp;
-        }
-        else
-        {
-            if (parent->left == node)
-                parent->left = temp;
-            else
-                parent->right = temp;
-
-            temp->parent = parent;
-        }
     }
 };
 
@@ -71,9 +52,9 @@ class AVLTree
 {
 public:
     shared_ptr<AVLTreeNode<T>> root;
-    Compare comp; // true if second argument is greater than first
+    Compare comp; // true if first argument is greater than second
 
-    AVLTree() : root(nullptr), comp(Compare()){};
+    AVLTree(Compare comp) : root(nullptr), comp(comp){};
 
     shared_ptr<AVLTreeNode<T>> find(shared_ptr<T> node);
 
@@ -85,6 +66,17 @@ public:
     void preOrder(shared_ptr<AVLTreeNode<T>> node) const;
     void postOrder(shared_ptr<AVLTreeNode<T>> node) const;
 
+    void generateDotFile(const std::string &filename) const
+    {
+        std::ofstream file("assets/" + filename);
+        file << "digraph AVLTree {" << std::endl;
+        if (root)
+        {
+            generateDotFileHelper(file, root);
+        }
+        file << "}" << std::endl;
+    }
+
 private:
     shared_ptr<AVLTreeNode<T>> LL(shared_ptr<AVLTreeNode<T>> B);
     shared_ptr<AVLTreeNode<T>> RR(shared_ptr<AVLTreeNode<T>> A);
@@ -94,18 +86,18 @@ private:
 
     shared_ptr<AVLTreeNode<T>> nextNode(shared_ptr<AVLTreeNode<T>> node)
     {
-        auto Next = node->right;
-        while (Next->left != nullptr)
+        auto Next = node->right_son;
+        while (Next->left_son != nullptr)
         {
-            Next = Next->left;
+            Next = Next->left_son;
         }
         return Next;
     }
 
     void updateMaxId(shared_ptr<AVLTreeNode<T>> node)
     {
-        shared_ptr<AVLTreeNode<T>> left_max = (left_son != nullptr) ? left_son->max_Id.lock() : nullptr;
-        shared_ptr<AVLTreeNode<T>> right_max = (right_son != nullptr) ? right_son->max_Id.lock() : nullptr;
+        shared_ptr<AVLTreeNode<T>> left_max = (node->left_son != nullptr) ? node->left_son->max_Id.lock() : nullptr;
+        shared_ptr<AVLTreeNode<T>> right_max = (node->right_son != nullptr) ? node->right_son->max_Id.lock() : nullptr;
         shared_ptr<AVLTreeNode<T>> max = node;
         if (left_max != nullptr && comp(max->inner_node, left_max->inner_node))
             max = left_max;
@@ -118,6 +110,22 @@ private:
         node->updateHeight();
         updateMaxId(node);
     }
+
+    void removeOnlyChild(shared_ptr<AVLTreeNode<T>> node);
+
+    void generateDotFileHelper(std::ofstream &file, std::shared_ptr<AVLTreeNode<T>> node) const
+    {
+        if (node->left_son)
+        {
+            file << "    \"" << *(node->inner_node) << "\" -> \"" << *(node->left_son->inner_node) << "\";" << std::endl;
+            generateDotFileHelper(file, (node->left_son));
+        }
+        if (node->right_son)
+        {
+            file << "    \"" << *(node->inner_node) << "\" -> \"" << *(node->right_son->inner_node) << "\";" << std::endl;
+            generateDotFileHelper(file, (node->right_son));
+        }
+    }
 };
 
 template <typename T, class Compare>
@@ -127,9 +135,9 @@ void AVLTree<T, Compare>::inOrder(shared_ptr<AVLTreeNode<T>> node) const
     {
         return;
     }
-    inOrder(node->getLeftSon());
-    cout << *(node->inner_node);
-    inOrder(node->getRightSon());
+    inOrder(node->left_son);
+    cout << *(node->inner_node) << endl;
+    inOrder(node->right_son);
 }
 
 template <typename T, class Compare>
@@ -139,9 +147,9 @@ void AVLTree<T, Compare>::preOrder(shared_ptr<AVLTreeNode<T>> node) const
     {
         return;
     }
-    cout << *(node->inner_node);
-    preOrder(node->getLeftSon());
-    preOrder(node->getRightSon());
+    cout << *(node->inner_node) << endl;
+    preOrder(node->left_son);
+    preOrder(node->right_son);
 }
 
 template <typename T, class Compare>
@@ -151,15 +159,16 @@ void AVLTree<T, Compare>::postOrder(shared_ptr<AVLTreeNode<T>> node) const
     {
         return;
     }
-    cout << *(node->inner_node);
-    postOrder(node->getLeftSon());
-    postOrder(node->getRightSon());
+    postOrder(node->left_son);
+    postOrder(node->right_son);
+    cout << *(node->inner_node) << endl;
 }
 
 template <typename T, class Compare>
 bool AVLTree<T, Compare>::insert(const shared_ptr<T> &inner_node)
 {
     auto node = make_shared<AVLTreeNode<T>>(inner_node);
+    updateData(node);
     if (root == nullptr)
     {
         root = node;
@@ -168,20 +177,20 @@ bool AVLTree<T, Compare>::insert(const shared_ptr<T> &inner_node)
 
     auto parent = find(inner_node);
     if (parent->inner_node == inner_node)
-        return False;
+        return false;
     if (comp(parent->inner_node, inner_node))
     {
-        parent->right = node;
+        parent->right_son = node;
     }
     else
     {
-        parent->left = node;
+        parent->left_son = node;
     }
     node->parent = parent;
 
     while (parent != nullptr)
     {
-        parent->updateData();
+        updateData(parent);
         if (parent->getBF() == POSITIVE_UNBALANCED || parent->getBF() == NEGATIVE_UNBALANCED)
         {
             parent = Rotate(parent);
@@ -202,26 +211,27 @@ bool AVLTree<T, Compare>::remove(const shared_ptr<T> &inner_node)
     }
 
     auto node = find(inner_node);
-    if (node->inner_node != inner_node)
-        return False;
 
-    if (node->left == nullptr || node->right == nullptr)
+    if (node->inner_node != inner_node)
+        return false;
+
+    if (node->left_son == nullptr || node->right_son == nullptr)
     {
-        node->removeOnlychild();
+        removeOnlyChild(node);
     }
     else
     {
         auto next = nextNode(node);
         node->inner_node = next->inner_node;
         node = next;
-        node->removeOnlychild();
+        removeOnlyChild(node);
     }
 
     auto parent = node->parent.lock();
 
     while (parent != nullptr)
     {
-        parent->updateData();
+        updateData(parent);
         if (parent->getBF() == POSITIVE_UNBALANCED || parent->getBF() == NEGATIVE_UNBALANCED)
         {
             parent = Rotate(parent);
@@ -242,9 +252,9 @@ shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::find(shared_ptr<T> node)
     {
         previous = current;
         if (comp(node, current->inner_node))
-            current = current->left;
+            current = current->left_son;
         else if (comp(current->inner_node, node))
-            current = current->right;
+            current = current->right_son;
         else
             return current;
     }
@@ -273,11 +283,11 @@ shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::LL(shared_ptr<AVLTreeNode<T>> B)
             parent->left_son = A;
         else
             parent->right_son = A;
-        parent->updateData();
+        updateData(parent);
     }
 
-    B->updateData();
-    A->updateData();
+    updateData(B);
+    updateData(A);
 
     return A;
 }
@@ -304,10 +314,11 @@ shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::RR(shared_ptr<AVLTreeNode<T>> A)
             parent->left_son = B;
         else
             parent->right_son = B;
+        updateData(parent);
     }
 
-    A->updateData();
-    B->updateData();
+    updateData(A);
+    updateData(B);
 
     return B;
 }
@@ -315,15 +326,15 @@ shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::RR(shared_ptr<AVLTreeNode<T>> A)
 template <typename T, class Compare>
 shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::LR(shared_ptr<AVLTreeNode<T>> node)
 {
-    node->left = rightRotate(node->left);
-    return leftRotate(node);
+    node->left_son = RR(node->left_son);
+    return LL(node);
 }
 
 template <typename T, class Compare>
 shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::RL(shared_ptr<AVLTreeNode<T>> node)
 {
-    node->right = leftRotate(node->right);
-    return rightRotate(node);
+    node->right_son = LL(node->right_son);
+    return RR(node);
 }
 
 template <typename T, class Compare>
@@ -331,16 +342,52 @@ shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::Rotate(shared_ptr<AVLTreeNode<T>
 {
     if (node->getBF() == 2)
     {
-        if (node->left->getBF() >= 0)
+        if (node->left_son->getBF() >= 0)
             return LL(node);
         else
             return LR(node);
     }
     else
     {
-        if (node->right->getBF() <= 0)
+        if (node->right_son->getBF() <= 0)
             return RR(node);
         else
             return RL(node);
     }
 }
+
+template <typename T, class Compare>
+void AVLTree<T, Compare>::removeOnlyChild(shared_ptr<AVLTreeNode<T>> node)
+{
+    shared_ptr<AVLTreeNode<T>> temp;
+    if (node->left_son == nullptr && node->right_son == nullptr)
+    {
+        temp = nullptr;
+    }
+    else if (node->left_son == nullptr)
+    {
+        temp = node->right_son;
+    }
+    else
+    {
+        temp = node->left_son;
+    }
+
+    if (node->parent.lock() == nullptr)
+    {
+        root = temp;
+    }
+    else
+    {
+        if (node->parent.lock()->left_son == node)
+
+            node->parent.lock()->left_son = temp;
+        else
+            node->parent.lock()->right_son = temp;
+
+        if (temp != nullptr)
+            temp->parent = node->parent.lock();
+    }
+}
+
+#endif // AVLTree_H_

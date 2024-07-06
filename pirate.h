@@ -1,15 +1,17 @@
 #ifndef PIRATES_H
 #define PIRATES_H
 
-#include "pirates24b1.h"
 #include "wet1util.h"
-#include "ship.h"
+#include "consts.h"
+
 #include <memory>
 
 using namespace std;
 
 class Ship;
-
+class Pirate;
+class PirateCompare;
+class MoneyCompare;
 class Pirate
 {
 
@@ -43,7 +45,8 @@ private:
 
 class PirateCompare // true if b > a
 {
-    bool operator()(shared_ptr<Pirate> a, shared_ptr<Pirate> b) const
+public:
+    bool operator()(const shared_ptr<Pirate> a, const shared_ptr<Pirate> b) const
     {
         return a->getPirateId() < b->getPirateId();
     }
@@ -51,7 +54,8 @@ class PirateCompare // true if b > a
 
 class MoneyCompare // true if b > a
 {
-    bool operator()(shared_ptr<Pirate> a, shared_ptr<Pirate> b) const
+public:
+    bool operator()(const shared_ptr<Pirate> a, const shared_ptr<Pirate> b) const
     {
         if (a->getTreasure() < b->getTreasure())
             return true;
