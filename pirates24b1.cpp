@@ -39,10 +39,7 @@ StatusType Ocean::remove_ship(int shipId)
         return StatusType::INVALID_INPUT;
     }
     auto ship = findShip(shipId);
-    if (ship == nullptr)
-    {
-        cout << "ship is null or has pirates" << endl;
-    }
+
     if (ship == nullptr || ship->getPirateCount() > ZERO)
     {
         return StatusType::FAILURE;
@@ -285,8 +282,6 @@ shared_ptr<AVLTreeNode<Ship>> Ocean::findShipLocation(int shipId)
     while (current)
     {
         int curId = current->inner_node->getShipId();
-        cout << curId << endl;
-        cout << ((curId == shipId) ? 1 : 0) << endl;
 
         previous = current;
         if (curId == shipId)
@@ -319,7 +314,7 @@ shared_ptr<AVLTreeNode<Pirate>> Ocean::findPirateLocation(int pirateId)
         {
             return current;
         }
-        else if (pirateId > curId)
+        else if (pirateId < curId)
         {
 
             current = current->left_son;
@@ -337,12 +332,6 @@ shared_ptr<AVLTreeNode<Pirate>> Ocean::findPirateLocation(int pirateId)
 shared_ptr<Ship> Ocean::findShip(int shipId)
 {
     auto current = findShipLocation(shipId);
-    if (current->inner_node->getShipId() != shipId)
-    {
-        cout << shipId << endl;
-        cout << current->inner_node->getShipId() << endl;
-        cout << "ship is null or has pirates22222" << endl;
-    }
     if (current == nullptr || current->inner_node->getShipId() != shipId)
         return nullptr;
     return current->inner_node;

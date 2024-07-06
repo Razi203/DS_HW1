@@ -27,7 +27,10 @@ public:
     weak_ptr<AVLTreeNode<T>> max_Id;
 
     AVLTreeNode(const shared_ptr<T> &node)
-        : inner_node(node), height(MINUS_ONE), left_son(nullptr), right_son(nullptr) {}
+        : inner_node(node), height(MINUS_ONE), left_son(nullptr), right_son(nullptr)
+    {
+        parent.reset();
+    }
 
     void updateHeight()
     {
@@ -65,7 +68,7 @@ public:
 
     void generateDotFile(const std::string &filename) const
     {
-        std::ofstream file(filename);
+        std::ofstream file("assets/" + filename);
         file << "digraph AVLTree {" << std::endl;
         if (root)
         {
@@ -218,6 +221,7 @@ bool AVLTree<T, Compare>::remove(const shared_ptr<T> &inner_node)
     }
 
     auto node = find(inner_node);
+
     if (node->inner_node != inner_node)
         return false;
 
@@ -386,11 +390,13 @@ void AVLTree<T, Compare>::removeOnlyChild(shared_ptr<AVLTreeNode<T>> node)
     else
     {
         if (node->parent.lock()->left_son == node)
+
             node->parent.lock()->left_son = temp;
         else
             node->parent.lock()->right_son = temp;
 
-        temp->parent = node->parent.lock();
+        if (temp != nullptr)
+            temp->parent = node->parent.lock();
     }
 }
 
