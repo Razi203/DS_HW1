@@ -5,7 +5,8 @@ using namespace std;
 
 void Ship::print(ostream &os) const
 {
-    os << "Ship ID: " << shipId << ", Cannon Amount: " << cannon_count << endl;
+    // os << shipId;
+    os << "Ship ID: " << shipId << ", Cannon Amount: " << cannon_count;
 }
 
 ostream &operator<<(ostream &os, const Ship &ship)
@@ -32,11 +33,6 @@ void Ship::setCannonCount(int count)
 void Ship::setPirateCount(int count)
 {
     pirate_count = count;
-}
-
-void Ship::setHeight(int h)
-{
-    height = h;
 }
 
 void Ship::setFirstPirate(shared_ptr<Pirate> pirate)
@@ -67,11 +63,6 @@ int Ship::getCannonCount() const
 int Ship::getPirateCount() const
 {
     return pirate_count;
-}
-
-int Ship::getHeight() const
-{
-    return height;
 }
 
 int Ship::getTreasureModifier() const

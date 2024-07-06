@@ -1,0 +1,27 @@
+digraph AVLTree {
+    "Ship ID: 4, Cannon Amount: 40" -> "Ship ID: 2, Cannon Amount: 20";
+    "Ship ID: 2, Cannon Amount: 20" -> "Ship ID: 1, Cannon Amount: 10";
+    "Ship ID: 1, Cannon Amount: 10" -> "nullShip ID: 1, Cannon Amount: 10L" [style=dotted];
+    "nullShip ID: 1, Cannon Amount: 10L" [shape=point];
+    "Ship ID: 1, Cannon Amount: 10" -> "nullShip ID: 1, Cannon Amount: 10R" [style=dotted];
+    "null0x558cbe701310R" [shape=point];
+    "Ship ID: 2, Cannon Amount: 20" -> "Ship ID: 3, Cannon Amount: 30";
+    "Ship ID: 3, Cannon Amount: 30" -> "nullShip ID: 3, Cannon Amount: 30L" [style=dotted];
+    "nullShip ID: 3, Cannon Amount: 30L" [shape=point];
+    "Ship ID: 3, Cannon Amount: 30" -> "nullShip ID: 3, Cannon Amount: 30R" [style=dotted];
+    "null0x558cbe7014b0R" [shape=point];
+    "Ship ID: 4, Cannon Amount: 40" -> "Ship ID: 6, Cannon Amount: 60";
+    "Ship ID: 6, Cannon Amount: 60" -> "Ship ID: 5, Cannon Amount: 50";
+    "Ship ID: 5, Cannon Amount: 50" -> "nullShip ID: 5, Cannon Amount: 50L" [style=dotted];
+    "nullShip ID: 5, Cannon Amount: 50L" [shape=point];
+    "Ship ID: 5, Cannon Amount: 50" -> "nullShip ID: 5, Cannon Amount: 50R" [style=dotted];
+    "null0x558cbe701650R" [shape=point];
+    "Ship ID: 6, Cannon Amount: 60" -> "Ship ID: 7, Cannon Amount: 70";
+    "Ship ID: 7, Cannon Amount: 70" -> "nullShip ID: 7, Cannon Amount: 70L" [style=dotted];
+    "nullShip ID: 7, Cannon Amount: 70L" [shape=point];
+    "Ship ID: 7, Cannon Amount: 70" -> "Ship ID: 8, Cannon Amount: 80";
+    "Ship ID: 8, Cannon Amount: 80" -> "nullShip ID: 8, Cannon Amount: 80L" [style=dotted];
+    "nullShip ID: 8, Cannon Amount: 80L" [shape=point];
+    "Ship ID: 8, Cannon Amount: 80" -> "nullShip ID: 8, Cannon Amount: 80R" [style=dotted];
+    "null0x558cbe7018c0R" [shape=point];
+}
