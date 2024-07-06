@@ -3,23 +3,133 @@
 
 StatusType Ocean::add_ship(int shipId, int cannons)
 {
+    if (shipId <= ZERO || cannons < ZERO)
+    {
+        return StatusType::INVALID_INPUT;
+    }
 
+    auto location = findShipLocation(shipId);
+    if (location != nullptr && location->inner_node->getShipId() == shipId)
+    {
+        return StatusType::FAILURE;
+    }
+
+    shared_ptr<Ship> new_ship;
+    shared_ptr<AVLTreeNode<Ship>> new_ship_node;
+    try
+    {
+        new_ship = make_shared<Ship>(shipId, cannons);
+        ships_tree.insert(new_ship);
+    }
+    catch (bad_alloc &e)
+    {
+        return StatusType::ALLOCATION_ERROR;
+    }
     return StatusType::SUCCESS;
 }
 
 StatusType Ocean::remove_ship(int shipId)
 {
-    return StatusType::FAILURE;
+    if (shipId <= ZERO)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+    auto ship = findShip(shipId);
+    if (ship == nullptr || ship->getPirateCount() > ZERO)
+    {
+        return StatusType::FAILURE;
+    }
+    ships_tree.remove(ship);
+    return StatusType::SUCCESS;
 }
 
 StatusType Ocean::add_pirate(int pirateId, int shipId, int treasure)
 {
-    return StatusType::FAILURE;
+    if (pirateId <= ZERO || shipId <= ZERO)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+
+    auto location = findPirateLocation(pirateId);
+    if (location != nullptr && location->inner_node->getPirateId() == pirateId)
+    {
+        return StatusType::FAILURE;
+    }
+    auto ship = findShip(shipId);
+    if (ship == nullptr || ship->getShipId() != shipId)
+    {
+        return StatusType::FAILURE;
+    }
+    shared_ptr<Pirate> new_pirate;
+    shared_ptr<AVLTreeNode<Pirate>> new_pirate_node;
+    try
+    {
+        new_pirate = make_shared<Pirate>(pirateId, treasure);
+        int dest_trasure_modifier = ship->getTreasureModifier();
+        new_pirate->setShip(ship);
+        new_pirate->setTreasure(treasure - dest_trasure_modifier);
+
+        pirates_tree.insert(new_pirate);
+        if (ship->getPirateCount() == ZERO)
+        {
+            ship->setFirstPirate(new_pirate);
+        }
+        else
+        {
+            ship->getLastPirate()->setNext(new_pirate);
+            new_pirate->setPrev(ship->getLastPirate());
+        }
+        ship->setPirateCount(ship->getPirateCount() + ONE);
+        ship->getMoneyPirates().insert(new_pirate);
+        ship->setLastPirate(new_pirate);
+    }
+    catch (bad_alloc &e)
+    {
+        return StatusType::ALLOCATION_ERROR;
+    }
+    return StatusType::SUCCESS;
 }
 
 StatusType Ocean::remove_pirate(int pirateId)
 {
-    return StatusType::FAILURE;
+    if (pirateId <= ZERO)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+    auto pirate = findPirate(pirateId);
+    if (pirate == nullptr)
+    {
+        return StatusType::FAILURE;
+    }
+    auto ship = pirate->getShip();
+    pirates_tree.remove(pirate);
+
+    if (ship->getPirateCount() == ONE)
+    {
+        ship->setFirstPirate(nullptr);
+        ship->setLastPirate(nullptr);
+    }
+    else if (ship->getFirstPirate()->getPirateId() == pirateId)
+    {
+        ship->setFirstPirate(pirate->getNext());
+        pirate->getNext()->setPrev(nullptr);
+    }
+    else if (ship->getLastPirate()->getPirateId() == pirateId)
+    {
+        ship->setLastPirate(pirate->getPrev());
+        pirate->getPrev()->setNext(nullptr);
+    }
+    else
+    {
+        pirate->getPrev()->setNext(pirate->getNext());
+        pirate->getNext()->setPrev(pirate->getPrev());
+    }
+    pirate->setShip(nullptr);
+    pirate->setNext(nullptr);
+    pirate->setPrev(nullptr);
+    ship->getMoneyPirates().remove(pirate);
+    ship->setPirateCount(ship->getPirateCount() - ONE);
+    return StatusType::SUCCESS;
 }
 
 StatusType Ocean::treason(int sourceShipId, int destShipId)
@@ -40,31 +150,18 @@ StatusType Ocean::treason(int sourceShipId, int destShipId)
     }
 
     shared_ptr<Pirate> first_pirate = source_ship->getFirstPirate();
-    shared_ptr<Pirate> second_pirate = first_pirate->getNext();
-
-    second_pirate->setPrev(nullptr);
-    first_pirate->setNext(nullptr);
-    first_pirate->setPrev(dest_ship->getLastPirate());
-    first_pirate->getPrev()->setNext(first_pirate);
-    first_pirate->setShip(dest_ship);
-
-    dest_ship->setLastPirate(first_pirate);
-    dest_ship->setFirstPirate(second_pirate);
-
-    source_ship->setPirateCount(source_ship->getPirateCount() - ONE);
-    dest_ship->setPirateCount(dest_ship->getPirateCount() + ONE);
+    remove_pirate(first_pirate->getPirateId());
 
     int source_trasure_modifier = source_ship->getTreasureModifier();
-    int dest_trasure_modifier = dest_ship->getTreasureModifier();
-    first_pirate->setTreasure(first_pirate->getTreasure() +
-                              source_trasure_modifier - dest_trasure_modifier);
+    int new_treasure = first_pirate->getTreasure() + source_trasure_modifier;
 
-    return StatusType::SUCCESS;
+    StatusType result = add_pirate(first_pirate->getPirateId(), destShipId, new_treasure);
+    return result;
 }
 
 StatusType Ocean::update_pirate_treasure(int pirateId, int change)
 {
-    if (pirateId <= 0)
+    if (pirateId <= ZERO)
     {
         return StatusType::INVALID_INPUT;
     }
@@ -80,24 +177,12 @@ StatusType Ocean::update_pirate_treasure(int pirateId, int change)
     ship->getMoneyPirates().remove(pirate);
     pirate->setTreasure(pirate->getTreasure() + change);
     ship->getMoneyPirates().insert(pirate);
-    /**
-     * remember to add remove and add of the pirate node after changing its treasure
-     * same shit for treason
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     */
-
     return StatusType::SUCCESS;
 }
 
 output_t<int> Ocean::get_treasure(int pirateId)
 {
-    if (pirateId <= 0)
+    if (pirateId <= ZERO)
     {
         return output_t<int>(StatusType::INVALID_INPUT);
     }
@@ -114,7 +199,7 @@ output_t<int> Ocean::get_treasure(int pirateId)
 
 output_t<int> Ocean::get_cannons(int shipId)
 {
-    if (shipId <= 0)
+    if (shipId <= ZERO)
     {
         return output_t<int>(StatusType::INVALID_INPUT);
     }
