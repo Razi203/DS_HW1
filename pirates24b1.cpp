@@ -3,7 +3,7 @@
 
 Ocean::Ocean() : ships_tree(ShipCompare()), pirates_tree(PirateCompare()) {}
 
-Ocean::~Ocean() {}
+Ocean::~Ocean() = default;
 
 StatusType Ocean::add_ship(int shipId, int cannons)
 {
