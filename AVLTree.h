@@ -34,15 +34,15 @@ public:
 
     void updateHeight()
     {
-        int left_height = (left_son != nullptr) ? left_son->height : -1;
-        int right_height = (right_son != nullptr) ? right_son->height : -1;
-        height = (left_height < right_height) ? right_height + 1 : left_height + 1;
+        int left_height = (left_son != nullptr) ? left_son->height : MINUS_ONE;
+        int right_height = (right_son != nullptr) ? right_son->height : MINUS_ONE;
+        height = (left_height < right_height) ? right_height + ONE : left_height + ONE;
     }
 
     int getBF() const
     {
-        int left_height = (left_son != nullptr) ? left_son->height : -1;
-        int right_height = (right_son != nullptr) ? right_son->height : -1;
+        int left_height = (left_son != nullptr) ? left_son->height : MINUS_ONE;
+        int right_height = (right_son != nullptr) ? right_son->height : MINUS_ONE;
         return left_height - right_height;
     }
 };
@@ -277,14 +277,14 @@ shared_ptr<AVLTreeNode<T>> AVLTree<T, Compare>::Rotate(shared_ptr<AVLTreeNode<T>
 {
     if (node->getBF() == 2)
     {
-        if (node->left_son->getBF() >= 0)
+        if (node->left_son->getBF() >= ZERO)
             return LL(node);
         else
             return LR(node);
     }
     else
     {
-        if (node->right_son->getBF() <= 0)
+        if (node->right_son->getBF() <= ZERO)
             return RR(node);
         else
             return RL(node);
