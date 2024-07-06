@@ -1,11 +1,13 @@
 #include "pirate.h"
+#include "ship.h"
+
 #include <iostream>
 
 using namespace std;
 
 void Pirate::print(ostream &os) const
 {
-    os << "Pirate ID: " << pirateId << ", Treasure: " << treasure;
+    os << "Pirate ID: " << pirateId << ", Treasure: " << treasure + getShip()->getTreasureModifier();
 }
 
 ostream &operator<<(ostream &os, const Pirate &pirate)

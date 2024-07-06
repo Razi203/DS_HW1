@@ -120,20 +120,10 @@ private:
             file << "    \"" << *(node->inner_node) << "\" -> \"" << *(node->left_son->inner_node) << "\";" << std::endl;
             generateDotFileHelper(file, (node->left_son));
         }
-        else
-        {
-            file << "    \"" << *(node->inner_node) << "\" -> \"null" << *(node->inner_node) << "L\" [style=dotted];" << std::endl;
-            file << "    \"null" << *(node->inner_node) << "L\" [shape=point];" << std::endl;
-        }
         if (node->right_son)
         {
             file << "    \"" << *(node->inner_node) << "\" -> \"" << *(node->right_son->inner_node) << "\";" << std::endl;
             generateDotFileHelper(file, (node->right_son));
-        }
-        else
-        {
-            file << "    \"" << *(node->inner_node) << "\" -> \"null" << *(node->inner_node) << "R\" [style=dotted];" << std::endl;
-            file << "    \"null" << (node->inner_node) << "R\" [shape=point];" << std::endl;
         }
     }
 };
