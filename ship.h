@@ -27,8 +27,8 @@ public:
     void setCannonCount(int count);
     void setPirateCount(int count);
     void setHeight(int h);
-    void setFirstPirate(weak_ptr<Pirate> pirate);
-    void setLastPirate(weak_ptr<Pirate> pirate);
+    void setFirstPirate(shared_ptr<Pirate> pirate);
+    void setLastPirate(shared_ptr<Pirate> pirate);
     void setTreasureModifier(int change);
 
     // Getters

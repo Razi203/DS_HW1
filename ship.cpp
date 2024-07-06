@@ -39,11 +39,11 @@ void Ship::setHeight(int h)
     height = h;
 }
 
-void Ship::setFirstPirate(weak_ptr<Pirate> pirate)
+void Ship::setFirstPirate(shared_ptr<Pirate> pirate)
 {
     first_pirate = pirate;
 }
-void Ship::setLastPirate(weak_ptr<Pirate> pirate)
+void Ship::setLastPirate(shared_ptr<Pirate> pirate)
 {
     last_pirate = pirate;
 }
