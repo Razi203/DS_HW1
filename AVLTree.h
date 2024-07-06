@@ -32,6 +32,8 @@ public:
         parent.reset();
     }
 
+    ~AVLTreeNode() = default;
+
     void updateHeight()
     {
         int left_height = (left_son != nullptr) ? left_son->height : MINUS_ONE;
@@ -55,6 +57,8 @@ public:
     Compare comp; // true if first argument is greater than second
 
     AVLTree(Compare comp) : root(nullptr), comp(comp){};
+
+    ~AVLTree() = default;
 
     shared_ptr<AVLTreeNode<T>> find(shared_ptr<T> node);
 
