@@ -13,18 +13,21 @@
 #ifndef PIRRATES24SPRING_WET1_H_
 #define PIRRATES24SPRING_WET1_H_
 
+#include <memory>
+
 #include "wet1util.h"
 #include "pirate.h"
 #include "ship.h"
 #include "AVLTree.h"
-
-#include <memory>
 
 using namespace std;
 
 class Ocean
 {
 private:
+    AVLTree<Ship, ShipCompare> ships_tree;
+    AVLTree<Pirate, PirateCompare> pirates_tree;
+
     shared_ptr<Ship> findShip(int shipId);
     shared_ptr<Pirate> findPirate(int pirateId);
     shared_ptr<AVLTreeNode<Ship>> findShipLocation(int shipId);
@@ -35,8 +38,6 @@ public:
     {
         ships_tree.print();
     }
-    AVLTree<Ship, ShipCompare> ships_tree;
-    AVLTree<Pirate, PirateCompare> pirates_tree;
     // <DO-NOT-MODIFY> {
 
     Ocean();
