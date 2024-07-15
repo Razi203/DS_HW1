@@ -17,7 +17,7 @@ class Ship
 public:
     Ship(int id, int cannons) : shipId(id), cannon_count(cannons),
                                 pirate_count(ZERO), treasure_modifier(ZERO), money_pirates(MoneyCompare()) {}
-    ~Ship() {}
+    ~Ship() = default;
 
     void print(ostream &os) const;
     friend ostream &operator<<(ostream &os, const Ship &ship);

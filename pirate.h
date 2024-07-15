@@ -17,7 +17,7 @@ class Pirate
 
 public:
     Pirate(int id, int value) : pirateId(id), treasure(value) {}
-    ~Pirate() {}
+    ~Pirate() = default;
 
     void print(ostream &os) const;
     friend ostream &operator<<(ostream &os, const Pirate &pirate);
