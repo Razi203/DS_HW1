@@ -13,12 +13,12 @@
 #ifndef PIRRATES24SPRING_WET1_H_
 #define PIRRATES24SPRING_WET1_H_
 
+#include <memory>
+
 #include "wet1util.h"
 #include "pirate.h"
 #include "ship.h"
 #include "AVLTree.h"
-
-#include <memory>
 
 using namespace std;
 

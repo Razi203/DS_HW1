@@ -6,13 +6,6 @@
 #include "pirate.h"
 #include "consts.h"
 
-// aditions
-#include <iostream>
-#include <fstream>
-#include <memory>
-#include <string>
-#include <queue>
-
 using namespace std;
 
 template <typename T>
